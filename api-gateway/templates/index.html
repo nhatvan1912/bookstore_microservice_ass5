@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic BookStore</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --accent: #F59E0B;
+            --bg: #0F172A;
+            --text: #F8FAFC;
+            --border: rgba(255, 255, 255, 0.1);
+            --radius: 12px;
+            --surface: #1E293B;
+            --surface-hover: #334155;
+            --text-muted: #94A3B8;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #F59E0B, #EC4899, #4F46E5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-buttons {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .nav-buttons button {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-buttons button:hover {
+            background: var(--surface-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            width: 100%;
+            box-sizing: border-box;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            margin-top: 0;
+            font-weight: 600;
+            color: var(--text);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3,
+        h4 {
+            color: var(--text);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .book-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .book-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.3rem;
+            color: var(--text);
+        }
+
+        .book-card p {
+            margin: 0.25rem 0;
+            color: var(--text-muted);
+        }
+
+        .book-price {
+            font-weight: 700;
+            font-size: 1.6rem !important;
+            color: var(--accent) !important;
+            margin: 1rem 0 !important;
+        }
+
+        button.primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        button.primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.25rem;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: var(--radius);
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        select option {
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        /* Custom table for Staff Area */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th,
+        td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text);
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 1.2rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .cart-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .cart-item-qty {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .cart-item-qty button {
+            background: var(--surface-hover);
+            color: var(--text);
+            border: none;
+            cursor: pointer;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s;
+        }
+
+        .cart-item-qty button:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--surface-hover);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .modal h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">📚 Academic BookStore</div>
+        <div class="nav-buttons">
+            <span id="user-info" style="margin-right: 1rem;"></span>
+            <button onclick="showSection('books-section')">Books</button>
+            <button onclick="loadCart(); showSection('cart-section')">Cart</button>
+            <button onclick="showSection('login-section')">Login</button>
+            <button onclick="showSection('register-section')">Register</button>
+            <button style="border-color: var(--accent); color: var(--accent);"
+                onclick="showSection('staff-section')">Staff Area</button>
+        </div>
+    </header>
+
+    <main>
+
+        <div id="login-section" class="card hidden">
+            <h2>Customer Login</h2>
+            <input type="email" id="login-email" placeholder="Email Address">
+            <button class="primary" onclick="login()">Login</button>
+            <p id="login-msg"></p>
+        </div>
+
+        <div id="register-section" class="card">
+            <h2>Customer Registration</h2>
+            <input type="text" id="reg-name" placeholder="Full Name">
+            <input type="email" id="reg-email" placeholder="Email Address">
+            <button class="primary" onclick="register()">Register & Auto-Create Cart</button>
+            <p id="reg-msg"></p>
+        </div>
+
+        <div id="books-section">
+            <h2>Book Catalog</h2>
+            <div id="books-grid" class="grid"></div>
+        </div>
+
+        <div id="cart-section" class="card hidden">
+            <h2>Your Cart</h2>
+            <div id="cart-items"></div>
+
+            <div id="checkout-form" class="hidden"
+                style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                <h3>Checkout</h3>
+                <label>Shipping Address:</label>
+                <input type="text" id="ship-address" placeholder="123 Academic Way">
+
+                <label>Payment Method:</label>
+                <select id="pay-method">
+                    <option value="Credit Card">Credit Card</option>
+                    <option value="PayPal">PayPal</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                </select>
+
+                <label>Shipping Method:</label>
+                <select id="ship-method">
+                    <option value="Standard">Standard (Free)</option>
+                    <option value="Express">Express (+$5.00)</option>
+                </select>
+
+                <button class="primary" onclick="placeOrder()" style="width: 100%;">Place Order</button>
+                <p id="order-msg"></p>
+            </div>
+        </div>
+
+        <div id="book-detail-section" class="card hidden">
+            <button style="margin-bottom: 1rem;" onclick="showSection('books-section')">🔙 Back to Catalog</button>
+            <div id="book-detail-content"></div>
+
+            <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                <h3>Reviews & Ratings</h3>
+                <div id="book-reviews"></div>
+
+                <div
+                    style="margin-top: 1.5rem; background: var(--bg); padding: 1rem; border-radius: var(--radius); border: 1px solid var(--border);">
+                    <h4>📝 Add your Review</h4>
+                    <select id="review-rating" style="max-width: 200px;">
+                        <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
+                        <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
+                        <option value="3">⭐⭐⭐ (3 Stars)</option>
+                        <option value="2">⭐⭐ (2 Stars)</option>
+                        <option value="1">⭐ (1 Star)</option>
+                    </select>
+                    <textarea id="review-comment" placeholder="What do you think about this book?" rows="3"
+                        style="width: 100%; margin-top: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.5rem;"></textarea>
+                    <button class="primary" style="margin-top: 0.5rem;" onclick="submitReview()">Post Review</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="staff-section" class="card hidden">
+            <h2 style="color: var(--accent);">Staff Area: Manage Books</h2>
+            <div
+                style="display: flex; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg);">
+                <div style="flex: 2;">
+                    <input type="text" id="staff-btitle" placeholder="Book Title" style="margin-bottom: 0.5rem;">
+                    <input type="text" id="staff-bauthor" placeholder="Author" style="margin-bottom: 0.5rem;">
+                </div>
+                <div style="flex: 1;">
+                    <input type="number" id="staff-bprice" placeholder="Price ($)" step="0.01"
+                        style="margin-bottom: 0.5rem;">
+                    <input type="number" id="staff-bstock" placeholder="Stock quantity" style="margin-bottom: 0.5rem;">
+                </div>
+                <div style="display: flex; align-items: center; padding-left: 1rem;">
+                    <button class="primary" style="background: var(--accent); height: 100%;" onclick="staffAddBook()">➕
+                        Add New Book</button>
+                </div>
+            </div>
+
+            <h3>Current Inventory</h3>
+            <div style="width: 100%; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border);">
+                            <th style="padding: 0.5rem;">ID</th>
+                            <th style="padding: 0.5rem;">Title</th>
+                            <th style="padding: 0.5rem;">Author</th>
+                            <th style="padding: 0.5rem;">Price</th>
+                            <th style="padding: 0.5rem;">Stock</th>
+                            <th style="padding: 0.5rem;">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staff-books-table"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="edit-modal-overlay">
+        <div class="modal">
+            <h3>✏️ Edit Book</h3>
+            <input type="hidden" id="edit-book-id">
+            <input type="text" id="edit-title" placeholder="Book Title">
+            <input type="text" id="edit-author" placeholder="Author">
+            <input type="number" id="edit-price" placeholder="Price ($)" step="0.01">
+            <input type="number" id="edit-stock" placeholder="Stock quantity">
+            <div class="modal-actions">
+                <button class="primary" style="flex: 1;" onclick="saveEditBook()">💾 Save Changes</button>
+                <button onclick="closeEditModal()" style="flex: 1; background: var(--surface-hover); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 1.5rem; border-radius: var(--radius); cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 500;">Cancel</button>
+            </div>
+            <p id="edit-msg" style="margin-top: 0.75rem; margin-bottom: 0;"></p>
+        </div>
+    </div>
+
+    <script>
+        let currentCustomer = null;
+        let currentCartId = null;
+        let currentBookDetailId = null;
+
+        function showSection(id) {
+            ['login-section', 'register-section', 'books-section', 'cart-section', 'book-detail-section', 'staff-section'].forEach(sec => {
+                document.getElementById(sec).classList.add('hidden');
+            });
+            document.getElementById(id).classList.remove('hidden');
+            if (id === 'books-section') loadBooks();
+            if (id === 'staff-section') loadStaffBooks();
+        }
+
+
+        async function login() {
+            const email = document.getElementById('login-email').value;
+            try {
+                const res = await fetch('/api/customer/customers/login/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    currentCustomer = data;
+                    document.getElementById('user-info').innerText = 'Welcome, ' + data.name;
+                    document.getElementById('login-msg').innerText = 'Logged in successfully!';
+
+                    // Fetch cart
+                    const cres = await fetch(`/api/cart/carts/customer/${currentCustomer.id}/`);
+                    if (cres.ok) {
+                        currentCartId = (await cres.json()).id;
+                    } else {
+                        currentCartId = null;
+                    }
+
+                    setTimeout(() => showSection('books-section'), 1000);
+                } else {
+                    document.getElementById('login-msg').innerText = 'Error: ' + JSON.stringify(data);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function register() {
+            const name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+
+            try {
+                const res = await fetch('/api/customer/customers/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    currentCustomer = data;
+                    document.getElementById('user-info').innerText = 'Welcome, ' + data.name;
+                    document.getElementById('reg-msg').innerText = 'Registered successfully. Cart created automatically!';
+                    setTimeout(() => showSection('books-section'), 1500);
+                } else {
+                    document.getElementById('reg-msg').innerText = 'Error: ' + JSON.stringify(data);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function loadBooks() {
+            try {
+                const res = await fetch('/api/book/books/');
+                const books = await res.json();
+                const grid = document.getElementById('books-grid');
+                grid.innerHTML = '';
+
+                books.forEach(b => {
+                    const safeTitle = b.title.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                    const safeAuthor = b.author.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                    grid.innerHTML += `
+                    <div class="book-card">
+                        <h3>${b.title}</h3>
+                        <p>By ${b.author}</p>
+                        <p class="book-price">$${b.price}</p>
+                        <p>Stock: ${b.stock}</p>
+                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                            <button class="primary" style="flex: 1; background: var(--secondary);" onclick="viewBookDetail(${b.id}, '${safeTitle}', '${safeAuthor}', ${b.price}, ${b.stock})">View Details</button>
+                            <button class="primary" style="flex: 1;" onclick="addToCart(${b.id})">Add to Cart</button>
+                        </div>
+                    </div>
+                `;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function addToCart(bookId) {
+            if (!currentCustomer) { alert("Please register first"); return; }
+
+            // Ensure cart exists
+            if (!currentCartId) {
+                const cres = await fetch(`/api/cart/carts/customer/${currentCustomer.id}/`);
+                if (cres.ok) {
+                    currentCartId = (await cres.json()).id;
+                } else {
+                    alert("Cart not found!");
+                    return;
+                }
+            }
+
+            try {
+                await fetch('/api/cart/carts/items/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cart: currentCartId, book_id: bookId, quantity: 1 })
+                });
+                alert('Added to cart');
+            } catch (e) { console.error(e); }
+        }
+
+        async function quantityChange(pk, currentQty, delta) {
+            const newQty = currentQty + delta;
+            if (newQty <= 0) {
+                await fetch(`/api/cart/carts/items/${pk}/`, { method: 'DELETE' });
+            } else {
+                await fetch(`/api/cart/carts/items/${pk}/`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ quantity: newQty })
+                });
+            }
+            loadCart();
+        }
+
+        async function loadCart() {
+            if (!currentCustomer) {
+                document.getElementById('cart-items').innerHTML = '<p>Please register to use the cart.</p>';
+                return;
+            }
+            try {
+                const res = await fetch(`/api/cart/carts/customer/${currentCustomer.id}/`);
+                const data = await res.json();
+                const div = document.getElementById('cart-items');
+                if (!res.ok || !data.items || data.items.length === 0) {
+                    div.innerHTML = '<p>Your cart is empty.</p>';
+                    document.getElementById('checkout-form').classList.add('hidden');
+                } else {
+                    currentCartId = data.id;
+
+                    // Fetch book details for all items in parallel
+                    const bookDetails = await Promise.all(
+                        data.items.map(item =>
+                            fetch(`/api/book/books/${item.book_id}/`).then(r => r.ok ? r.json() : null)
+                        )
+                    );
+
+                    let html = '';
+                    let total = 0;
+                    data.items.forEach((item, index) => {
+                        const book = bookDetails[index];
+                        const bookName = book ? book.title : `Book ID: ${item.book_id}`;
+                        const bookAuthor = book ? `<small style="color: var(--text-muted);">By ${book.author}</small>` : '';
+                        const bookPrice = book ? `<span style="color: var(--accent); font-weight: 600; margin-left: 0.75rem;">$${book.price}</span>` : '';
+                        if (book) total += parseFloat(book.price) * item.quantity;
+                        html += `
+                        <div class="cart-item">
+                            <div>
+                                <strong>${bookName}</strong>${bookPrice}<br>${bookAuthor}
+                            </div>
+                            <div class="cart-item-qty">
+                                <button onclick="quantityChange(${item.id}, ${item.quantity}, -1)">-</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="quantityChange(${item.id}, ${item.quantity}, 1)">+</button>
+                            </div>
+                        </div>
+                    `;
+                    });
+                    html += `
+                        <div style="border-top: 1px solid var(--border); margin-top: 1rem; padding-top: 1rem; text-align: right;">
+                            <span style="font-size: 1.1rem; color: var(--text-muted);">Total: </span>
+                            <span style="font-size: 1.5rem; font-weight: 700; color: var(--accent);">$${total.toFixed(2)}</span>
+                        </div>
+                    `;
+                    div.innerHTML = html;
+                    document.getElementById('checkout-form').classList.remove('hidden');
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function placeOrder() {
+            if (!currentCustomer) return;
+
+            const addr = document.getElementById('ship-address').value;
+            const payMethod = document.getElementById('pay-method').value;
+            const shipMethod = document.getElementById('ship-method').value;
+
+            try {
+                const res = await fetch(`/api/order/orders/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customer_id: currentCustomer.id,
+                        address: addr,
+                        pay_method: payMethod,
+                        ship_method: shipMethod
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    document.getElementById('order-msg').innerHTML = `
+                    <span style="color: green;">Order created successfully! Order #${data.id} - Total: $${data.total_amount}</span><br>
+                    Payments and Shipping have been triggered.`;
+                } else {
+                    document.getElementById('order-msg').innerText = 'Error: ' + JSON.stringify(data);
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function renderReviews() {
+            const reviewDiv = document.getElementById('book-reviews');
+            reviewDiv.innerHTML = '<p>Loading reviews...</p>';
+            try {
+                const res = await fetch(`/api/rate/reviews/?book_id=${currentBookDetailId}`);
+                if (!res.ok) {
+                    reviewDiv.innerHTML = '<p>Could not load reviews.</p>';
+                    return;
+                }
+                const reviews = await res.json();
+                if (!reviews || reviews.length === 0) {
+                    reviewDiv.innerHTML = '<p style="color: gray; font-style: italic;">No reviews yet. Be the first to review!</p>';
+                } else {
+                    let html = '';
+                    reviews.forEach(r => {
+                        let stars = '⭐'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+                        html += `
+                        <div style="padding: 1rem; border: 1px solid var(--border); margin-bottom: 0.75rem; border-radius: var(--radius); background: var(--surface);">
+                            <div style="display: flex; justify-content: space-between;">
+                                <strong>${stars} - ${r.rating}/5</strong>
+                                <small style="color: gray;">Customer ID: ${r.customer_id}</small>
+                            </div>
+                            <p style="margin: 0.5rem 0 0; color: var(--text);">${r.comment}</p>
+                        </div>
+                    `;
+                    });
+                    reviewDiv.innerHTML = html;
+                }
+            } catch (e) {
+                console.error(e);
+                reviewDiv.innerHTML = '<p>Error loading reviews.</p>';
+            }
+        }
+
+        async function viewBookDetail(bookId, title, author, price, stock) {
+            currentBookDetailId = bookId;
+            document.getElementById('book-detail-content').innerHTML = `
+            <h2>${title}</h2>
+            <p style="color: var(--secondary); margin-top: -10px;">By ${author}</p>
+            <p class="book-price" style="font-size: 1.5rem;">$${price}</p>
+            <p><strong>Stock Available:</strong> ${stock}</p>
+            <button class="primary" style="margin-top: 1rem; font-size: 1.1rem; padding: 0.75rem 1.5rem;" onclick="addToCart(${bookId})">🛒 Add to Cart</button>
+        `;
+
+            await renderReviews();
+            showSection('book-detail-section');
+        }
+
+        async function submitReview() {
+            if (!currentCustomer) {
+                alert("❗ Please login or register to leave a review.");
+                showSection('login-section');
+                return;
+            }
+            if (!currentBookDetailId) return;
+
+            const rating = document.getElementById('review-rating').value;
+            const comment = document.getElementById('review-comment').value;
+
+            if (comment.trim() === '') {
+                alert("Please enter a valid comment");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/rate/reviews/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customer_id: currentCustomer.id,
+                        book_id: currentBookDetailId,
+                        rating: parseInt(rating),
+                        comment: comment
+                    })
+                });
+                if (res.ok) {
+                    document.getElementById('review-comment').value = '';
+                    await renderReviews();
+                    alert("Thanks for your review!");
+                } else {
+                    const err = await res.json();
+                    alert("Error submitting review: " + JSON.stringify(err));
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        /* ============== STAFF BOOK MANAGEMENT ============== */
+        async function loadStaffBooks() {
+            try {
+                const res = await fetch('/api/book/books/');
+                const books = await res.json();
+                const tbody = document.getElementById('staff-books-table');
+                tbody.innerHTML = '';
+
+                books.forEach(b => {
+                    const safeTitle = b.title.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                    const safeAuthor = b.author.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                    tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid var(--border);">
+                        <td style="padding: 0.5rem;">${b.id}</td>
+                        <td style="padding: 0.5rem;"><strong>${b.title}</strong></td>
+                        <td style="padding: 0.5rem;">${b.author}</td>
+                        <td style="padding: 0.5rem;">$${b.price}</td>
+                        <td style="padding: 0.5rem;">${b.stock}</td>
+                        <td style="padding: 0.5rem;">
+                            <button style="background: var(--secondary); color: white; border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; margin-right: 0.2rem;" onclick="staffUpdateBook(${b.id}, '${safeTitle}', '${safeAuthor}', ${b.price}, ${b.stock})">Edit</button>
+                            <button style="background: #ef4444; color: white; border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer;" onclick="staffDeleteBook(${b.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+                });
+            } catch (e) { console.error(e); }
+        }
+
+        async function staffAddBook() {
+            const title = document.getElementById('staff-btitle').value;
+            const author = document.getElementById('staff-bauthor').value;
+            const price = document.getElementById('staff-bprice').value;
+            const stock = document.getElementById('staff-bstock').value;
+
+            if (!title || !author || !price || !stock) {
+                alert("Please fill all fields!");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/book/books/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, author, price: parseFloat(price), stock: parseInt(stock) })
+                });
+                if (res.ok) {
+                    document.getElementById('staff-btitle').value = '';
+                    document.getElementById('staff-bauthor').value = '';
+                    document.getElementById('staff-bprice').value = '';
+                    document.getElementById('staff-bstock').value = '';
+                    loadStaffBooks();
+                } else {
+                    alert("Error adding book");
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        async function staffDeleteBook(id) {
+            if (!confirm("Are you sure you want to delete this book?")) return;
+            try {
+                const res = await fetch(`/api/book/books/${id}/`, { method: 'DELETE' });
+                if (res.ok) {
+                    loadStaffBooks();
+                } else {
+                    alert("Error deleting book");
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function staffUpdateBook(id, title, author, price, stock) {
+            document.getElementById('edit-book-id').value = id;
+            document.getElementById('edit-title').value = title;
+            document.getElementById('edit-author').value = author;
+            document.getElementById('edit-price').value = price;
+            document.getElementById('edit-stock').value = stock;
+            document.getElementById('edit-msg').innerText = '';
+            document.getElementById('edit-modal-overlay').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal-overlay').classList.remove('active');
+        }
+
+        async function saveEditBook() {
+            const id = document.getElementById('edit-book-id').value;
+            const title = document.getElementById('edit-title').value;
+            const author = document.getElementById('edit-author').value;
+            const price = document.getElementById('edit-price').value;
+            const stock = document.getElementById('edit-stock').value;
+
+            if (!title || !author || !price || !stock) {
+                document.getElementById('edit-msg').innerText = 'Please fill all fields.';
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/book/books/${id}/`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, author, price: parseFloat(price), stock: parseInt(stock) })
+                });
+                if (res.ok) {
+                    closeEditModal();
+                    loadStaffBooks();
+                } else {
+                    document.getElementById('edit-msg').innerText = 'Error updating book.';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        // Init
+        showSection('books-section');
+    </script>
+</body>
+
+</html>

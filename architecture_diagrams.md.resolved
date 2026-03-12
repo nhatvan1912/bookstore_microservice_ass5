@@ -1,0 +1,149 @@
+# Kiến Trúc Microservices - Bookstore
+Dựa trên việc đọc mã nguồn dự án, đây là minh hoạ kiến trúc tổng thể cũng như chi tiết kỹ thuật cho từng service. Các service được xây dựng theo kiến trúc **Microservices** tách biệt, mỗi service quản lý một SQLite Database riêng, giao tiếp với nhau qua HTTP (RESTful). Tất cả request từ ngoài vào sẽ đi qua một **API Gateway**.
+
+## 1. Kiến trúc Tổng thể Hệ thống (System Architecture)
+```mermaid
+graph TD
+    %% Tác nhân bên ngoài
+    Client([Client / Frontend]) --> |HTTP Request| API_GW(API Gateway<br>:8000)
+
+    %% Các Services
+    subgraph Microservices Tiers
+        API_GW -->|Proxy /customers| Customer(Customer Service :8001)
+        API_GW -->|Proxy /books| Book(Book Service :8002)
+        API_GW -->|Proxy /carts| Cart(Cart Service :8003)
+        API_GW -->|Proxy /staff| Staff(Staff Service :8004)
+        API_GW -->|Proxy /manager| Manager(Manager Service :8005)
+        API_GW -->|Proxy /catalogs| Catalog(Catalog Service :8006)
+        API_GW -->|Proxy /orders| Order(Order Service :8007)
+        API_GW -->|Proxy /shipments| Ship(Ship Service :8008)
+        API_GW -->|Proxy /payments| Pay(Pay Service :8009)
+        API_GW -->|Proxy /rates| Rate(Comment Rate Service :8010)
+        API_GW -->|Proxy /ai| AI(Recommender AI Service :8011)
+    end
+
+    %% Giao tiếp liên Service (Inter-service Communication)
+    Customer -.->|POST /carts/| Cart
+    Cart -.->|GET /books/| Book
+    Order -.->|1. GET /carts/| Cart
+    Order -.->|2. GET /books/| Book
+    Order -.->|3. POST /payments/| Pay
+    Order -.->|4. POST /shipments/| Ship
+
+    classDef core fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef orchestration fill:#fff3cd,stroke:#ffc107,stroke-width:2px;
+    classDef isolated fill:#cce5ff,stroke:#007bff,stroke-width:2px;
+    
+    class API_GW core;
+    class Order,Customer orchestration;
+    class Book,Cart,Staff,Manager,Catalog,Ship,Pay,Rate,AI isolated;
+```
+
+---
+
+## 2. API Gateway Service
+Đóng vai trò như một **Reverse Proxy** đơn giản bằng Django `requests`. Nhận request từ Client, lọc prefix URL (như `/book`, `/order`, v.v.) và chuyển tiếp *(forward)* dữ liệu đến đúng cổng của service tương ứng.
+
+```mermaid
+graph LR
+    Client([Client]) -->|HTTP / GET, POST...| Proxy(Django Views `proxy_api`)
+    
+    subgraph API Gateway
+        Proxy -->|Lookup Service| Routes{"SERVICES Dictionary<br>(URL Mapping)"}
+    end
+
+    Routes -->|Method: GET| Downstream[Downstream Services]
+    Routes -->|Method: POST| Downstream
+    Routes -->|Method: PUT| Downstream
+    Routes -->|Method: DELETE| Downstream
+```
+
+---
+
+## 3. Order Service (Orchestrator Service)
+Service có luồng xử lý phức tạp nhất. Khi tạo một đơn hàng mới (`POST /orders/`), nó đóng vai trò điều phối lấy dữ liệu từ giỏ hàng, sách và kích hoạt thanh toán & giao hàng tự động.
+
+```mermaid
+sequenceDiagram
+    participant API as API Gateway
+    participant Order as Order Service
+    participant Cart as Cart Service
+    participant Book as Book Service
+    participant DB as SQLite (Order)
+    participant Pay as Pay Service
+    participant Ship as Ship Service
+
+    API->>Order: POST /orders/ (customer_id, methods)
+    activate Order
+    Order->>Cart: GET /carts/customer/{id}/
+    Cart-->>Order: Return cart_data (items list)
+    
+    loop Per Item
+        Order->>Book: GET /books/{id}/
+        Book-->>Order: Return Book Price
+    end
+
+    Order->>DB: Save Order & OrderItems
+    
+    Order->>Pay: POST /payments/ (Try trigger payment)
+    Order->>Ship: POST /shipments/ (Try trigger shipping)
+    
+    Order-->>API: Return 200 OK (Order Serialized Data)
+    deactivate Order
+```
+
+---
+
+## 4. Customer Service
+Quản lý dữ liệu người mua hàng. Khi thiết lập một khách hàng mới, nó tự động gọi sang Cart Service để mở giỏ hàng tương ứng.
+
+```mermaid
+graph TD
+    API[API Gateway] -->|POST /customers/| Views(Customer Views)
+    Views -->|1. Validate Data| Serializers(Customer Serializer)
+    Serializers -->|2. Save Customer| DB[(Customer SQLite DB)]
+    Views -->|3. Init Cart (Requests)| CartSvc([Cart Service])
+    
+    CartSvc -.->|POST /carts/, JSON: {customer_id}| CartDB
+```
+
+---
+
+## 5. Cart Service
+Xử lý các logic về giỏ hàng, cập nhật số lượng và xoá vật phẩm. Cần tham chiếu với hệ thống sản phẩm.
+
+```mermaid
+graph LR
+    API[API Gateway] -->|POST /cart-items/| Views(Cart Items View)
+    
+    subgraph Cart Service
+        Views -->|1. Extract book_id| CheckBook{Validate Book?}
+        CheckBook -->|2. Insert / Update Qty| Models(CartItem)
+        Models <--> DB[(Cart SQLite DB)]
+    end
+    
+    CheckBook -.->|HTTP GET /books/{book_id}/| BookSvc([Book Service])
+```
+
+---
+
+## 6. Các API Độc Lập Khác (Book, Pay, Ship, Staff, Manager, v.v...)
+Đây là các service lõi có tính độc lập hoàn toàn, chủ yếu phục vụ các tác vụ **CRUD** cơ bản qua Django REST Framework, nhận request trực tiếp từ API Gateway hoặc từ các trigger nội bộ như của Order.
+
+```mermaid
+graph TD
+    Request[Incoming Request<br>via Gateway/Internal] --> URL(URL Router)
+    URL --> ViewSet(ListCreateAPIView<br>RetrieveUpdateDestroyAPIView)
+    ViewSet --> Serializer(DRF Serializer)
+    Serializer --> Model(Django Model)
+    Model <--> DB[(Service's SQLite3 DB)]
+    
+    %% Trả kết quả
+    Serializer -->|Return 200 / 400| Request
+```
+
+### 💡 Khuyến nghị cấu trúc & Kiến trúc (Từ góc nhìn Senior Developer):
+1. **Quản lý lỗi & Transaction (Reliability)**: 
+   - Hiện tại logic thông tri giữa các service (VD từ `Order Service` sang `Pay Service`) đang dùng khối lệnh `try...except...pass`. Nếu `Pay Service` offline, Order đã lưu database nhưng Payment không được tạo và không có cơ chế bù trừ sự cố. Gợi ý áp dụng Message Queue (RabbitMQ / Kafka) tích hợp Pattern Saga/Outbox.
+2. **Database:** Hiện đang sử dụng SQLite và chia tách riêng rẻ trên các file `<service>/app/db.sqlite3`. Rất chuẩn mô hình *Database-per-service*. Tuy nhiên để Scale trên production cần đổi sang PostgreSQL/MySQL.
+3. **Hiệu suất API Gateway**: Việc dùng `requests.request()` nối tiếp trong proxy tại Gateway sẽ là *"Bottleneck"* cản trở lưu lượng cao vì bị chặn đồng bộ (sync-blocking). Nên sử dụng Nginx, Kong hoặc Async `httpx`/`aiohttp`.
