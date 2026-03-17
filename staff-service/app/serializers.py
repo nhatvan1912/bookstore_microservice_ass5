@@ -5,3 +5,6 @@ class StaffSerializer(serializers.ModelSerializer):
     class Meta:
         model = Staff
         fields = '__all__'
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }

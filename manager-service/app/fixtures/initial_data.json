@@ -1,0 +1,12 @@
+[
+  {
+    "model": "app.manager",
+    "pk": 1,
+    "fields": {
+      "name": "Quang Vo",
+      "email": "quang.manager@example.com",
+      "department": "Operations",
+      "password": "pbkdf2_sha256$600000$SCELZVhzLE8eljLSuLuwow$I7iY77nNiWBc6E3Ree1U/bBc96VYNbB6/uNEsaEugno="
+    }
+  }
+]

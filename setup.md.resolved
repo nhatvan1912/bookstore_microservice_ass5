@@ -1,0 +1,20 @@
+Dữ liệu mẫu:
+Customer: lan.customer@example.com / cust1234
+Customer: minh.customer@example.com / cust1234
+Staff: huy.staff@example.com / staff1234
+Staff: thu.staff@example.com / staff1234
+Manager: quang.manager@example.com / manager1234
+
+Tạo bảng:
+CREATE DATABASE api_gateway_db;
+CREATE DATABASE customer_service_db;
+CREATE DATABASE book_service_db;
+CREATE DATABASE cart_service_db;
+CREATE DATABASE staff_service_db;
+CREATE DATABASE manager_service_db;
+CREATE DATABASE catalog_service_db;
+CREATE DATABASE order_service_db;
+CREATE DATABASE ship_service_db;
+CREATE DATABASE pay_service_db;
+CREATE DATABASE comment_rate_service_db;
+CREATE DATABASE recommender_ai_service_db;

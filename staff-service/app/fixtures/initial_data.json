@@ -1,0 +1,22 @@
+[
+  {
+    "model": "app.staff",
+    "pk": 1,
+    "fields": {
+      "name": "Huy Le",
+      "email": "huy.staff@example.com",
+      "role": "Inventory",
+      "password": "pbkdf2_sha256$600000$zXFp5HkvKL3kyCadHBfGBa$hpKuNK3ER9niB8sx3jlWMFz0Z43kvpCqp5QF/amxXqw="
+    }
+  },
+  {
+    "model": "app.staff",
+    "pk": 2,
+    "fields": {
+      "name": "Thu Pham",
+      "email": "thu.staff@example.com",
+      "role": "Catalog",
+      "password": "pbkdf2_sha256$600000$zXFp5HkvKL3kyCadHBfGBa$hpKuNK3ER9niB8sx3jlWMFz0Z43kvpCqp5QF/amxXqw="
+    }
+  }
+]

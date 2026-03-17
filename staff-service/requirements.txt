@@ -1,3 +1,5 @@
 django>=4.2
+pymysql
+cryptography
 djangorestframework
 requests

@@ -1,0 +1,26 @@
+[
+  {
+    "model": "app.catalog",
+    "pk": 1,
+    "fields": {
+      "category_name": "Software Architecture",
+      "description": "Patterns, microservices, and enterprise design."
+    }
+  },
+  {
+    "model": "app.catalog",
+    "pk": 2,
+    "fields": {
+      "category_name": "Backend Engineering",
+      "description": "APIs, data systems, and cloud-native development."
+    }
+  },
+  {
+    "model": "app.catalog",
+    "pk": 3,
+    "fields": {
+      "category_name": "Professional Growth",
+      "description": "Teamwork, leadership, and delivery practices."
+    }
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "model": "app.book",
+    "pk": 1,
+    "fields": {
+      "title": "Clean Architecture",
+      "author": "Robert C. Martin",
+      "category": "technology",
+      "description": "A practical guide to software architecture principles, clean boundaries, and long-term maintainable systems.",
+      "image_url": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+      "price": "23.50",
+      "stock": 18
+    }
+  },
+  {
+    "model": "app.book",
+    "pk": 2,
+    "fields": {
+      "title": "Designing Data-Intensive Applications",
+      "author": "Martin Kleppmann",
+      "category": "science",
+      "description": "Deep dive into data systems: storage engines, stream processing, distributed consensus, and reliability trade-offs.",
+      "image_url": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=900&q=80",
+      "price": "32.00",
+      "stock": 12
+    }
+  },
+  {
+    "model": "app.book",
+    "pk": 3,
+    "fields": {
+      "title": "Building Microservices",
+      "author": "Sam Newman",
+      "category": "technology",
+      "description": "Patterns and practices for decomposing systems into resilient, independently deployable services.",
+      "image_url": "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=900&q=80",
+      "price": "27.90",
+      "stock": 20
+    }
+  },
+  {
+    "model": "app.book",
+    "pk": 4,
+    "fields": {
+      "title": "Refactoring",
+      "author": "Martin Fowler",
+      "category": "technology",
+      "description": "Catalog of proven refactoring techniques to improve existing code without changing behavior.",
+      "image_url": "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=900&q=80",
+      "price": "29.50",
+      "stock": 14
+    }
+  },
+  {
+    "model": "app.book",
+    "pk": 5,
+    "fields": {
+      "title": "The Pragmatic Programmer",
+      "author": "Andrew Hunt",
+      "category": "business",
+      "description": "Timeless engineering mindset and practical habits for becoming an effective software professional.",
+      "image_url": "https://images.unsplash.com/photo-1455885666463-9d26d9f1f8f3?auto=format&fit=crop&w=900&q=80",
+      "price": "24.75",
+      "stock": 16
+    }
+  }
+]

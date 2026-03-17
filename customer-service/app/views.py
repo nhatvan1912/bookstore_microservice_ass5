@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from django.contrib.auth.hashers import make_password, check_password
 from .models import Customer
 from .serializers import CustomerSerializer
 import requests
@@ -15,7 +16,14 @@ class CustomerListCreate(APIView):
     def post(self, request):
         serializer = CustomerSerializer(data=request.data)
         if serializer.is_valid():
-            customer = serializer.save()
+            password = serializer.validated_data.get("password")
+            if not password:
+                return Response({"error": "Password is required"}, status=400)
+            customer = Customer.objects.create(
+                name=serializer.validated_data.get("name"),
+                email=serializer.validated_data.get("email"),
+                password=make_password(password),
+            )
             # Call cart-service
             try:
                 requests.post(
@@ -24,16 +32,18 @@ class CustomerListCreate(APIView):
                 )
             except:
                 pass # logging could be placed here
-            return Response(serializer.data)
+            return Response(CustomerSerializer(customer).data)
         return Response(serializer.errors)
 
 
 class CustomerLogin(APIView):
     def post(self, request):
         email = request.data.get("email")
+        password = request.data.get("password")
         try:
             customer = Customer.objects.get(email=email)
-            serializer = CustomerSerializer(customer)
-            return Response(serializer.data)
+            if not password or not check_password(password, customer.password):
+                return Response({"error": "Invalid credentials"}, status=401)
+            return Response(CustomerSerializer(customer).data)
         except Customer.DoesNotExist:
             return Response({"error": "Customer not found"}, status=404)

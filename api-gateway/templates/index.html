@@ -1,914 +1,1360 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic BookStore</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
-        :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --secondary: #10B981;
-            --accent: #F59E0B;
-            --bg: #0F172A;
-            --text: #F8FAFC;
-            --border: rgba(255, 255, 255, 0.1);
-            --radius: 12px;
-            --surface: #1E293B;
-            --surface-hover: #334155;
-            --text-muted: #94A3B8;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        header {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid var(--border);
-            padding: 1.2rem 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #F59E0B, #EC4899, #4F46E5);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-buttons {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .nav-buttons button {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.6rem 1.2rem;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .nav-buttons button:hover {
-            background: var(--surface-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        main {
-            flex: 1;
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            width: 100%;
-            box-sizing: border-box;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2.5rem;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 2rem;
-            backdrop-filter: blur(10px);
-        }
-
-        h2 {
-            margin-top: 0;
-            font-weight: 600;
-            color: var(--text);
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-        }
-
-        h3,
-        h4 {
-            color: var(--text);
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .book-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            box-shadow: var(--shadow);
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .book-card h3 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.3rem;
-            color: var(--text);
-        }
-
-        .book-card p {
-            margin: 0.25rem 0;
-            color: var(--text-muted);
-        }
-
-        .book-price {
-            font-weight: 700;
-            font-size: 1.6rem !important;
-            color: var(--accent) !important;
-            margin: 1rem 0 !important;
-        }
-
-        button.primary {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: var(--radius);
-            cursor: pointer;
-            font-weight: 600;
-            font-family: 'Outfit', sans-serif;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        button.primary:hover {
-            background: var(--primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-        }
-
-        input,
-        select,
-        textarea {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            margin-bottom: 1.25rem;
-            background: rgba(15, 23, 42, 0.5);
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: var(--radius);
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
-            background: rgba(15, 23, 42, 0.8);
-        }
-
-        select option {
-            background: var(--surface);
-            color: var(--text);
-        }
-
-        /* Custom table for Staff Area */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        th,
-        td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.02);
-            color: var(--text);
-        }
-
-        tr:hover {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.02);
-            padding: 1.2rem;
-            border-radius: var(--radius);
-            margin-bottom: 1rem;
-            border: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        .cart-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .cart-item-qty {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .cart-item-qty button {
-            background: var(--surface-hover);
-            color: var(--text);
-            border: none;
-            cursor: pointer;
-            border-radius: 6px;
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.2s;
-        }
-
-        .cart-item-qty button:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--surface-hover);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #475569;
-        }
-
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            z-index: 200;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 2rem;
-            width: 100%;
-            max-width: 480px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        .modal h3 {
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-            font-size: 1.3rem;
-        }
-
-        .modal-actions {
-            display: flex;
-            gap: 0.75rem;
-            margin-top: 0.5rem;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📚 BookStore Control Center</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Playfair+Display:wght@700;800&family=Inter:wght@400;500;600;700&display=swap');
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f97316;
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --ink: #1e293b;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.12);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      color: var(--ink);
+      background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 50%, #fce7f3 100%);
+      min-height: 100vh;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+      box-shadow: var(--shadow-lg);
+      border-bottom: 4px solid rgba(255,255,255,0.2);
+    }
+    .topbar-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      margin: 0;
+    }
+    .pill {
+      border: 2px solid rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.18);
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: white;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .top-actions { 
+      display: flex; 
+      gap: 12px; 
+      flex-wrap: wrap; 
+      align-items: center; 
+    }
+    button {
+      border: 2px solid var(--line);
+      background: white;
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 11px 20px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    button:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+      border-color: var(--primary);
+    }
+    button:active { transform: translateY(0); }
+    button.primary {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      border-color: var(--primary-dark);
+      color: white;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+    button.primary:hover { 
+      box-shadow: 0 8px 25px rgba(99, 102, 241, 0.45);
+      transform: translateY(-3px);
+    }
+    button.danger {
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      color: var(--danger);
+      border-color: #fca5a5;
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.15);
+    }
+    button.danger:hover { 
+      background: linear-gradient(135deg, #fecaca 0%, #f87171 100%);
+      color: white;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25);
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    main {
+      max-width: 1400px;
+      margin: 36px auto 48px;
+      padding: 0 24px;
+    }
+    .hidden { display: none !important; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-lg);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    h1 { 
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin: 0 0 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .topbar .brand {
+      font-family: 'Poppins', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin: 0;
+      color: #ffffff;
+      background: none;
+      background-clip: border-box;
+      -webkit-background-clip: border-box;
+      -webkit-text-fill-color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    h2 { 
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.7rem;
+      margin: 0 0 14px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    h3 { 
+      font-size: 1.2rem;
+      margin: 0 0 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    p { margin: 0 0 12px; color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    input, select, textarea {
+      width: 100%;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font: inherit;
+      background: white;
+      color: var(--ink);
+      transition: all 0.2s ease;
+    }
+    input:focus, select:focus, textarea:focus { 
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+    th { 
+      background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 100%);
+      font-weight: 700;
+      color: var(--primary);
+    }
+    th, td { padding: 14px; border-bottom: 1px solid var(--line); text-align: left; }
+    tr:hover { background: #f8f9fa; }
+    .kpi { 
+      font-family: 'Poppins', sans-serif;
+      font-size: 2.6rem; 
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 6px;
+    }
+    .muted { color: var(--muted); font-size: 0.9rem; }
+    .status-pending { color: var(--warning); font-weight: 700; }
+    .status-confirm { color: var(--success); font-weight: 700; }
+    .status-failed { color: var(--danger); font-weight: 700; }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      border-bottom: 3px solid var(--line);
+      overflow: visible;
+    }
+    .tab-btn {
+      border: none;
+      background: transparent;
+      padding: 16px 22px;
+      cursor: pointer;
+      font-weight: 700;
+      color: var(--muted);
+      border-bottom: 4px solid transparent;
+      margin-bottom: -3px;
+      font-size: 0.95rem;
+      transition: all 0.2s ease;
+    }
+    .tab-btn:hover { color: var(--primary); }
+    .tab-btn.active { 
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      box-shadow: inset 0 -4px 0 var(--primary);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(3px);
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--line);
+    }
+    .modal-close {
+      float: right;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.2s ease;
+      background: none;
+      border: none;
+      padding: 0;
+      margin: -10px -10px 10px 0;
+    }
+    .modal-close:hover { color: var(--danger); }
+    .book-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .book-cover {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid var(--line);
+      background: #eef2f7;
+    }
+    .book-card:hover { 
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(99, 102, 241, 0.15);
+      transform: translateY(-4px);
+      background: var(--surface);
+    }
+    .book-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .book-author { color: var(--muted); font-size: 0.87rem; margin-bottom: 10px; }
+    .book-price { font-size: 1.4rem; font-weight: 800; background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+    .book-stock { color: var(--muted); font-size: 0.87rem; margin-bottom: 12px; }
+    .book-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .book-actions button {
+      width: 100%;
+      min-height: 42px;
+      padding: 10px 8px;
+      font-size: 0.88rem;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    @media (max-width: 640px) {
+      .book-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+    .alert { 
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      border-left: 5px solid;
+      font-weight: 600;
+    }
+    .alert.success { 
+      background: #ecfdf5;
+      border-color: var(--success);
+      color: #047857;
+    }
+    .alert.error { 
+      background: #fef2f2;
+      border-color: var(--danger);
+      color: #991b1b;
+    }
+    .review-item {
+      background: linear-gradient(135deg, #f8fafc 0%, #f0f4f8 100%);
+      padding: 16px;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      border-left: 4px solid var(--primary);
+    }
+    .review-rating { 
+      font-weight: 800;
+      color: var(--accent);
+      font-size: 0.95rem;
+      margin-bottom: 6px;
+    }
+    .review-text { 
+      color: var(--ink);
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+    .review-reply { 
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      padding: 10px 14px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+      color: #92400e;
+      font-size: 0.87rem;
+      font-style: italic;
+    }
+  </style>
 </head>
-
 <body>
-
-    <header>
-        <div class="logo">📚 Academic BookStore</div>
-        <div class="nav-buttons">
-            <span id="user-info" style="margin-right: 1rem;"></span>
-            <button onclick="showSection('books-section')">Books</button>
-            <button onclick="loadCart(); showSection('cart-section')">Cart</button>
-            <button onclick="showSection('login-section')">Login</button>
-            <button onclick="showSection('register-section')">Register</button>
-            <button style="border-color: var(--accent); color: var(--accent);"
-                onclick="showSection('staff-section')">Staff Area</button>
-        </div>
-    </header>
-
-    <main>
-
-        <div id="login-section" class="card hidden">
-            <h2>Customer Login</h2>
-            <input type="email" id="login-email" placeholder="Email Address">
-            <button class="primary" onclick="login()">Login</button>
-            <p id="login-msg"></p>
-        </div>
-
-        <div id="register-section" class="card">
-            <h2>Customer Registration</h2>
-            <input type="text" id="reg-name" placeholder="Full Name">
-            <input type="email" id="reg-email" placeholder="Email Address">
-            <button class="primary" onclick="register()">Register & Auto-Create Cart</button>
-            <p id="reg-msg"></p>
-        </div>
-
-        <div id="books-section">
-            <h2>Book Catalog</h2>
-            <div id="books-grid" class="grid"></div>
-        </div>
-
-        <div id="cart-section" class="card hidden">
-            <h2>Your Cart</h2>
-            <div id="cart-items"></div>
-
-            <div id="checkout-form" class="hidden"
-                style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
-                <h3>Checkout</h3>
-                <label>Shipping Address:</label>
-                <input type="text" id="ship-address" placeholder="123 Academic Way">
-
-                <label>Payment Method:</label>
-                <select id="pay-method">
-                    <option value="Credit Card">Credit Card</option>
-                    <option value="PayPal">PayPal</option>
-                    <option value="Bank Transfer">Bank Transfer</option>
-                </select>
-
-                <label>Shipping Method:</label>
-                <select id="ship-method">
-                    <option value="Standard">Standard (Free)</option>
-                    <option value="Express">Express (+$5.00)</option>
-                </select>
-
-                <button class="primary" onclick="placeOrder()" style="width: 100%;">Place Order</button>
-                <p id="order-msg"></p>
-            </div>
-        </div>
-
-        <div id="book-detail-section" class="card hidden">
-            <button style="margin-bottom: 1rem;" onclick="showSection('books-section')">🔙 Back to Catalog</button>
-            <div id="book-detail-content"></div>
-
-            <div style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
-                <h3>Reviews & Ratings</h3>
-                <div id="book-reviews"></div>
-
-                <div
-                    style="margin-top: 1.5rem; background: var(--bg); padding: 1rem; border-radius: var(--radius); border: 1px solid var(--border);">
-                    <h4>📝 Add your Review</h4>
-                    <select id="review-rating" style="max-width: 200px;">
-                        <option value="5">⭐⭐⭐⭐⭐ (5 Stars)</option>
-                        <option value="4">⭐⭐⭐⭐ (4 Stars)</option>
-                        <option value="3">⭐⭐⭐ (3 Stars)</option>
-                        <option value="2">⭐⭐ (2 Stars)</option>
-                        <option value="1">⭐ (1 Star)</option>
-                    </select>
-                    <textarea id="review-comment" placeholder="What do you think about this book?" rows="3"
-                        style="width: 100%; margin-top: 0.5rem; border: 1px solid var(--border); border-radius: var(--radius); padding: 0.5rem;"></textarea>
-                    <button class="primary" style="margin-top: 0.5rem;" onclick="submitReview()">Post Review</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="staff-section" class="card hidden">
-            <h2 style="color: var(--accent);">Staff Area: Manage Books</h2>
-            <div
-                style="display: flex; gap: 1rem; margin-bottom: 1.5rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg);">
-                <div style="flex: 2;">
-                    <input type="text" id="staff-btitle" placeholder="Book Title" style="margin-bottom: 0.5rem;">
-                    <input type="text" id="staff-bauthor" placeholder="Author" style="margin-bottom: 0.5rem;">
-                </div>
-                <div style="flex: 1;">
-                    <input type="number" id="staff-bprice" placeholder="Price ($)" step="0.01"
-                        style="margin-bottom: 0.5rem;">
-                    <input type="number" id="staff-bstock" placeholder="Stock quantity" style="margin-bottom: 0.5rem;">
-                </div>
-                <div style="display: flex; align-items: center; padding-left: 1rem;">
-                    <button class="primary" style="background: var(--accent); height: 100%;" onclick="staffAddBook()">➕
-                        Add New Book</button>
-                </div>
-            </div>
-
-            <h3>Current Inventory</h3>
-            <div style="width: 100%; overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid var(--border);">
-                            <th style="padding: 0.5rem;">ID</th>
-                            <th style="padding: 0.5rem;">Title</th>
-                            <th style="padding: 0.5rem;">Author</th>
-                            <th style="padding: 0.5rem;">Price</th>
-                            <th style="padding: 0.5rem;">Stock</th>
-                            <th style="padding: 0.5rem;">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="staff-books-table"></tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-
-    <div class="modal-overlay" id="edit-modal-overlay">
-        <div class="modal">
-            <h3>✏️ Edit Book</h3>
-            <input type="hidden" id="edit-book-id">
-            <input type="text" id="edit-title" placeholder="Book Title">
-            <input type="text" id="edit-author" placeholder="Author">
-            <input type="number" id="edit-price" placeholder="Price ($)" step="0.01">
-            <input type="number" id="edit-stock" placeholder="Stock quantity">
-            <div class="modal-actions">
-                <button class="primary" style="flex: 1;" onclick="saveEditBook()">💾 Save Changes</button>
-                <button onclick="closeEditModal()" style="flex: 1; background: var(--surface-hover); border: 1px solid var(--border); color: var(--text); padding: 0.8rem 1.5rem; border-radius: var(--radius); cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 500;">Cancel</button>
-            </div>
-            <p id="edit-msg" style="margin-top: 0.75rem; margin-bottom: 0;"></p>
-        </div>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1 class="brand">📚 BookStore Control Center</h1>
+      <div class="top-actions">
+        <span id="userBadge" class="pill">👤 Guest</span>
+        <button onclick="show('authView')"> Login</button>
+        <button onclick="logout()">Logout</button>
+      </div>
     </div>
+  </header>
 
-    <script>
-        let currentCustomer = null;
-        let currentCartId = null;
-        let currentBookDetailId = null;
+  <main>
+    <section id="authView" class="card">
+      <h1>🔐 Centralized Authentication</h1>
+      <p>Unified login across all platforms. One account, complete access.</p>
+      <div class="grid">
+        <div class="card" style="margin:0;">
+          <h3>🔑 Customer / Staff / Manager Login</h3>
+          <select id="loginRole" style="margin-bottom: 12px;">
+            <option value="customer">👤 Customer</option>
+            <option value="staff">👔 Staff</option>
+            <option value="manager">🎯 Manager</option>
+          </select>
+          <input id="loginEmail" type="email" placeholder="Email address" style="margin-bottom: 12px;" />
+          <input id="loginPassword" type="password" placeholder="Password" style="margin-bottom: 14px;" />
+          <button class="primary" onclick="login()" style="width: 100%;">✓ Sign In</button>
+          <p id="loginMsg"></p>
+        </div>
+        <div class="card" style="margin:0;">
+          <h3>✨ New Customer Registration</h3>
+          <p style="font-size: 0.85rem;">Only customers can self-register. Staff accounts are created by your manager.</p>
+          <input id="regName" placeholder="Full name" style="margin-bottom: 12px;" />
+          <input id="regEmail" type="email" placeholder="Email address" style="margin-bottom: 12px;" />
+          <input id="regPassword" type="password" placeholder="Password" style="margin-bottom: 14px;" />
+          <button class="primary" onclick="registerCustomer()" style="width: 100%;">+ Create Account</button>
+          <p id="regMsg"></p>
+        </div>
+      </div>
+    </section>
 
-        function showSection(id) {
-            ['login-section', 'register-section', 'books-section', 'cart-section', 'book-detail-section', 'staff-section'].forEach(sec => {
-                document.getElementById(sec).classList.add('hidden');
-            });
-            document.getElementById(id).classList.remove('hidden');
-            if (id === 'books-section') loadBooks();
-            if (id === 'staff-section') loadStaffBooks();
-        }
+    <section id="customerView" class="hidden">
+      <div class="card">
+        <h2>👋 Welcome, Customer!</h2>
+        <p>Browse, filter, add directly to cart, review books, and track your orders.</p>
+      </div>
 
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'browse')">📖 Browse Books</button>
+        <button class="tab-btn" onclick="switchTab(event, 'cart')">🛒 Shopping Cart</button>
+        <button class="tab-btn" onclick="switchTab(event, 'orders')">📦 Orders</button>
+        <button class="tab-btn" onclick="switchTab(event, 'reviews')">⭐ My Reviews</button>
+      </div>
 
-        async function login() {
-            const email = document.getElementById('login-email').value;
-            try {
-                const res = await fetch('/api/customer/customers/login/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    currentCustomer = data;
-                    document.getElementById('user-info').innerText = 'Welcome, ' + data.name;
-                    document.getElementById('login-msg').innerText = 'Logged in successfully!';
+      <div id="browse" class="tab-content active">
+        <div class="card">
+          <h3>Available Books</h3>
+          <div class="row" style="margin-bottom: 18px;">
+            <input id="bookQ" placeholder="🔍 Search by title..." />
+            <input id="bookAuthor" placeholder="👤 Filter by author..." />
+            <select id="bookCategory" onchange="loadBooks()"></select>
+            <button onclick="loadBooks()" class="primary">Search</button>
+          </div>
+          <div id="recList" style="margin-bottom: 20px;"></div>
+          <h3>All Books</h3>
+          <div id="bookList" class="grid"></div>
+        </div>
+      </div>
 
-                    // Fetch cart
-                    const cres = await fetch(`/api/cart/carts/customer/${currentCustomer.id}/`);
-                    if (cres.ok) {
-                        currentCartId = (await cres.json()).id;
-                    } else {
-                        currentCartId = null;
-                    }
+      <div id="cart" class="tab-content">
+        <div class="card">
+          <h3>🛒 Your Shopping Cart</h3>
+          <div id="cartList"></div>
+          <div class="row" style="margin-top: 20px;">
+            <input id="shipAddress" placeholder="📍 Shipping address" />
+            <select id="payMethod" onchange="renderPaymentFields()"><option value="Card">💳 Credit Card</option><option value="PayPal">🅿️ PayPal</option><option value="Bank">🏦 Bank Transfer</option></select>
+            <select id="shipMethod"><option value="Standard">📮 Standard (5-7 days)</option><option value="Express">🚀 Express (2-3 days)</option></select>
+          </div>
+          <div id="paymentFields" class="row" style="margin-top: 8px;"></div>
+          <button class="primary" onclick="checkout()" style="width: 100%; padding: 14px; font-size: 1rem;">💰 Complete Purchase</button>
+          <p id="checkoutMsg"></p>
+        </div>
+      </div>
 
-                    setTimeout(() => showSection('books-section'), 1000);
-                } else {
-                    document.getElementById('login-msg').innerText = 'Error: ' + JSON.stringify(data);
-                }
-            } catch (e) { console.error(e); }
-        }
+      <div id="orders" class="tab-content">
+        <div class="card">
+          <h3>📦 Your Order History</h3>
+          <div id="orderList"></div>
+        </div>
+      </div>
 
-        async function register() {
-            const name = document.getElementById('reg-name').value;
-            const email = document.getElementById('reg-email').value;
+      <div id="reviews" class="tab-content">
+        <div class="card">
+          <h3>⭐ Your Reviews & Ratings</h3>
+          <div class="row">
+            <select id="reviewBook"></select>
+            <select id="reviewRating">
+              <option value="5">⭐⭐⭐⭐⭐ 5 Stars</option>
+              <option value="4">⭐⭐⭐⭐ 4 Stars</option>
+              <option value="3">⭐⭐⭐ 3 Stars</option>
+              <option value="2">⭐⭐ 2 Stars</option>
+              <option value="1">⭐ 1 Star</option>
+            </select>
+          </div>
+          <textarea id="reviewText" placeholder="💬 Share your thoughts about this book..." rows="3" style="margin-bottom: 12px;"></textarea>
+          <button class="primary" onclick="postReview()" style="width: 100%;">Post Review</button>
+          <div id="myReviewList" style="margin-top: 20px;"></div>
+        </div>
+      </div>
+    </section>
 
-            try {
-                const res = await fetch('/api/customer/customers/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, email })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    currentCustomer = data;
-                    document.getElementById('user-info').innerText = 'Welcome, ' + data.name;
-                    document.getElementById('reg-msg').innerText = 'Registered successfully. Cart created automatically!';
-                    setTimeout(() => showSection('books-section'), 1500);
-                } else {
-                    document.getElementById('reg-msg').innerText = 'Error: ' + JSON.stringify(data);
-                }
-            } catch (e) { console.error(e); }
-        }
+    <section id="staffView" class="hidden">
+      <div class="card">
+        <h2>👔 Staff Control Panel</h2>
+        <p>Manage inventory, monitor operations, and engage with customers.</p>
+      </div>
 
-        async function loadBooks() {
-            try {
-                const res = await fetch('/api/book/books/');
-                const books = await res.json();
-                const grid = document.getElementById('books-grid');
-                grid.innerHTML = '';
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTabStaff(event, 'inventory')">📖 Inventory</button>
+        <button class="tab-btn" onclick="switchTabStaff(event, 'staff-orders')">📦 Orders</button>
+        <button class="tab-btn" onclick="switchTabStaff(event, 'staff-reviews')">💬 Reviews</button>
+      </div>
 
-                books.forEach(b => {
-                    const safeTitle = b.title.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                    const safeAuthor = b.author.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                    grid.innerHTML += `
-                    <div class="book-card">
-                        <h3>${b.title}</h3>
-                        <p>By ${b.author}</p>
-                        <p class="book-price">$${b.price}</p>
-                        <p>Stock: ${b.stock}</p>
-                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button class="primary" style="flex: 1; background: var(--secondary);" onclick="viewBookDetail(${b.id}, '${safeTitle}', '${safeAuthor}', ${b.price}, ${b.stock})">View Details</button>
-                            <button class="primary" style="flex: 1;" onclick="addToCart(${b.id})">Add to Cart</button>
-                        </div>
-                    </div>
-                `;
-                });
-            } catch (e) { console.error(e); }
-        }
+      <div id="inventory" class="tab-content active">
+        <div class="card">
+          <h3>📚 Add New Book</h3>
+          <div class="row">
+            <input id="sTitle" placeholder="Title" />
+            <input id="sAuthor" placeholder="Author" />
+            <select id="sCategory"></select>
+            <input id="sPrice" type="number" step="0.01" placeholder="Price ($)" />
+            <input id="sStock" type="number" placeholder="Quantity in stock" />
+          </div>
+          <button class="primary" onclick="staffAddBook()" style="width: 100%; margin-bottom: 20px;">+ Add Book</button>
+          <h3>📋 Current Inventory</h3>
+          <div id="staffBookTable"></div>
+        </div>
+      </div>
 
-        async function addToCart(bookId) {
-            if (!currentCustomer) { alert("Please register first"); return; }
+      <div id="staff-orders" class="tab-content">
+        <div class="grid">
+          <div class="card">
+            <h3>📦 Active Orders</h3>
+            <div id="staffOrderList"></div>
+          </div>
+          <div class="card">
+            <h3>💳 Payments & Shipping</h3>
+            <div id="staffOpsStatus"></div>
+          </div>
+        </div>
+      </div>
 
-            // Ensure cart exists
-            if (!currentCartId) {
-                const cres = await fetch(`/api/cart/carts/customer/${currentCustomer.id}/`);
-                if (cres.ok) {
-                    currentCartId = (await cres.json()).id;
-                } else {
-                    alert("Cart not found!");
-                    return;
-                }
-            }
+      <div id="staff-reviews" class="tab-content">
+        <div class="card">
+          <h3>💬 Customer Feedback</h3>
+          <div id="staffReviewList"></div>
+        </div>
+      </div>
+    </section>
 
-            try {
-                await fetch('/api/cart/carts/items/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ cart: currentCartId, book_id: bookId, quantity: 1 })
-                });
-                alert('Added to cart');
-            } catch (e) { console.error(e); }
-        }
+    <section id="managerView" class="hidden">
+      <div class="card">
+        <h2>🎯 Manager Dashboard</h2>
+        <p>Monitor KPIs, manage staff, and track business performance.</p>
+      </div>
 
-        async function quantityChange(pk, currentQty, delta) {
-            const newQty = currentQty + delta;
-            if (newQty <= 0) {
-                await fetch(`/api/cart/carts/items/${pk}/`, { method: 'DELETE' });
-            } else {
-                await fetch(`/api/cart/carts/items/${pk}/`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ quantity: newQty })
-                });
-            }
-            loadCart();
-        }
+      <div class="grid">
+        <div class="card">
+          <div class="kpi" id="kpiRevenue">$0.00</div>
+          <div class="muted">💰 Confirmed Revenue</div>
+        </div>
+        <div class="card">
+          <div class="kpi" id="kpiOrders">0</div>
+          <div class="muted">📦 Confirmed Orders</div>
+        </div>
+        <div class="card">
+          <div class="kpi" id="kpiStaff">0</div>
+          <div class="muted">👥 Staff Accounts</div>
+        </div>
+      </div>
 
-        async function loadCart() {
-            if (!currentCustomer) {
-                document.getElementById('cart-items').innerHTML = '<p>Please register to use the cart.</p>';
-                return;
-            }
-            try {
-                const res = await fetch(`/api/cart/carts/customer/${currentCustomer.id}/`);
-                const data = await res.json();
-                const div = document.getElementById('cart-items');
-                if (!res.ok || !data.items || data.items.length === 0) {
-                    div.innerHTML = '<p>Your cart is empty.</p>';
-                    document.getElementById('checkout-form').classList.add('hidden');
-                } else {
-                    currentCartId = data.id;
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTabManager(event, 'staff')">👥 Staff Mgmt</button>
+        <button class="tab-btn" onclick="switchTabManager(event, 'revenue')">💰 Revenue</button>
+      </div>
 
-                    // Fetch book details for all items in parallel
-                    const bookDetails = await Promise.all(
-                        data.items.map(item =>
-                            fetch(`/api/book/books/${item.book_id}/`).then(r => r.ok ? r.json() : null)
-                        )
-                    );
+      <div id="staff" class="tab-content active">
+        <div class="card">
+          <h3>➕ Create New Staff Account</h3>
+          <div class="row">
+            <input id="mStaffName" placeholder="Full name" />
+            <input id="mStaffEmail" placeholder="Email address" />
+            <input id="mStaffRole" placeholder="Role (e.g., Inventory)" />
+            <input id="mStaffPass" type="password" placeholder="Password" />
+          </div>
+          <button class="primary" onclick="managerCreateStaff()" style="width: 100%; margin-bottom: 20px;">+ Create Account</button>
+          <p id="mStaffMsg"></p>
+          <h3>📋 Staff Directory</h3>
+          <div id="managerStaffTable"></div>
+        </div>
+      </div>
 
-                    let html = '';
-                    let total = 0;
-                    data.items.forEach((item, index) => {
-                        const book = bookDetails[index];
-                        const bookName = book ? book.title : `Book ID: ${item.book_id}`;
-                        const bookAuthor = book ? `<small style="color: var(--text-muted);">By ${book.author}</small>` : '';
-                        const bookPrice = book ? `<span style="color: var(--accent); font-weight: 600; margin-left: 0.75rem;">$${book.price}</span>` : '';
-                        if (book) total += parseFloat(book.price) * item.quantity;
-                        html += `
-                        <div class="cart-item">
-                            <div>
-                                <strong>${bookName}</strong>${bookPrice}<br>${bookAuthor}
-                            </div>
-                            <div class="cart-item-qty">
-                                <button onclick="quantityChange(${item.id}, ${item.quantity}, -1)">-</button>
-                                <span>${item.quantity}</span>
-                                <button onclick="quantityChange(${item.id}, ${item.quantity}, 1)">+</button>
-                            </div>
-                        </div>
-                    `;
-                    });
-                    html += `
-                        <div style="border-top: 1px solid var(--border); margin-top: 1rem; padding-top: 1rem; text-align: right;">
-                            <span style="font-size: 1.1rem; color: var(--text-muted);">Total: </span>
-                            <span style="font-size: 1.5rem; font-weight: 700; color: var(--accent);">$${total.toFixed(2)}</span>
-                        </div>
-                    `;
-                    div.innerHTML = html;
-                    document.getElementById('checkout-form').classList.remove('hidden');
-                }
-            } catch (e) { console.error(e); }
-        }
+      <div id="revenue" class="tab-content">
+        <div class="card">
+          <h3>💰 Revenue Breakdown</h3>
+          <div id="managerRevenueTable"></div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-        async function placeOrder() {
-            if (!currentCustomer) return;
+  <div id="bookModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeBookModal()">&times;</button>
+      <img id="modalBookImage" src="" alt="Book cover" style="width:70%; max-height:400px; object-fit:cover; border-radius:10px; margin:0 auto 14px auto;display:block;" />
+      <h2 id="modalBookTitle"></h2>
+      <p id="modalBookAuthor" class="muted"></p>
+      <p id="modalBookDescription" class="muted" style="line-height:1.5; margin-bottom: 12px;"></p>
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, #6366f1 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px;" id="modalBookPrice"></div>
+        <div class="muted" id="modalBookStock"></div>
+      </div>
+      <button class="primary" onclick="addToCartFromModal()" style="width: 100%; margin-bottom: 20px; padding: 14px; font-size: 1rem;">🛒 Add to Cart</button>
+      <h3>⭐ Customer Reviews</h3>
+      <div id="modalReviewList"></div>
+    </div>
+  </div>
 
-            const addr = document.getElementById('ship-address').value;
-            const payMethod = document.getElementById('pay-method').value;
-            const shipMethod = document.getElementById('ship-method').value;
+  <script>
+    let authToken = null;
+    let role = null;
+    let user = null;
+    let customerCartId = null;
+    let currentBooks = [];
+    let currentBookForCart = null;
+    const SESSION_STORAGE_KEY = 'bookstore_session_v1';
+    const BOOK_CATEGORIES = [
+      { value: '', label: '📚 All Categories' },
+      { value: 'fiction', label: 'Fiction' },
+      { value: 'non_fiction', label: 'Non-Fiction' },
+      { value: 'technology', label: 'Technology' },
+      { value: 'business', label: 'Business' },
+      { value: 'science', label: 'Science' },
+      { value: 'children', label: 'Children' },
+      { value: 'other', label: 'Other' },
+    ];
 
-            try {
-                const res = await fetch(`/api/order/orders/`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        customer_id: currentCustomer.id,
-                        address: addr,
-                        pay_method: payMethod,
-                        ship_method: shipMethod
-                    })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    document.getElementById('order-msg').innerHTML = `
-                    <span style="color: green;">Order created successfully! Order #${data.id} - Total: $${data.total_amount}</span><br>
-                    Payments and Shipping have been triggered.`;
-                } else {
-                    document.getElementById('order-msg').innerText = 'Error: ' + JSON.stringify(data);
-                }
-            } catch (e) { console.error(e); }
-        }
+    function categoryLabel(value) {
+      const match = BOOK_CATEGORIES.find(c => c.value === value);
+      return match ? match.label : 'Other';
+    }
 
-        async function renderReviews() {
-            const reviewDiv = document.getElementById('book-reviews');
-            reviewDiv.innerHTML = '<p>Loading reviews...</p>';
-            try {
-                const res = await fetch(`/api/rate/reviews/?book_id=${currentBookDetailId}`);
-                if (!res.ok) {
-                    reviewDiv.innerHTML = '<p>Could not load reviews.</p>';
-                    return;
-                }
-                const reviews = await res.json();
-                if (!reviews || reviews.length === 0) {
-                    reviewDiv.innerHTML = '<p style="color: gray; font-style: italic;">No reviews yet. Be the first to review!</p>';
-                } else {
-                    let html = '';
-                    reviews.forEach(r => {
-                        let stars = '⭐'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-                        html += `
-                        <div style="padding: 1rem; border: 1px solid var(--border); margin-bottom: 0.75rem; border-radius: var(--radius); background: var(--surface);">
-                            <div style="display: flex; justify-content: space-between;">
-                                <strong>${stars} - ${r.rating}/5</strong>
-                                <small style="color: gray;">Customer ID: ${r.customer_id}</small>
-                            </div>
-                            <p style="margin: 0.5rem 0 0; color: var(--text);">${r.comment}</p>
-                        </div>
-                    `;
-                    });
-                    reviewDiv.innerHTML = html;
-                }
-            } catch (e) {
-                console.error(e);
-                reviewDiv.innerHTML = '<p>Error loading reviews.</p>';
-            }
-        }
+    function resolveBookImageUrl(rawUrl, fallback = 'https://via.placeholder.com/400x260?text=Book+Cover') {
+      const url = String(rawUrl || '').trim();
+      if (!url) return fallback;
 
-        async function viewBookDetail(bookId, title, author, price, stock) {
-            currentBookDetailId = bookId;
-            document.getElementById('book-detail-content').innerHTML = `
-            <h2>${title}</h2>
-            <p style="color: var(--secondary); margin-top: -10px;">By ${author}</p>
-            <p class="book-price" style="font-size: 1.5rem;">$${price}</p>
-            <p><strong>Stock Available:</strong> ${stock}</p>
-            <button class="primary" style="margin-top: 1rem; font-size: 1.1rem; padding: 0.75rem 1.5rem;" onclick="addToCart(${bookId})">🛒 Add to Cart</button>
+      // Convert common Google Drive share URLs to direct image preview URLs.
+      if (url.includes('drive.google.com')) {
+        let fileId = '';
+        const filePathMatch = url.match(/\/file\/d\/([^/]+)/i);
+        const queryIdMatch = url.match(/[?&]id=([^&]+)/i);
+        if (filePathMatch && filePathMatch[1]) fileId = filePathMatch[1];
+        if (!fileId && queryIdMatch && queryIdMatch[1]) fileId = queryIdMatch[1];
+        if (fileId) return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200`;
+      }
+
+      return url;
+    }
+
+    function renderCategorySelects() {
+      const customerSelect = document.getElementById('bookCategory');
+      const staffSelect = document.getElementById('sCategory');
+      if (customerSelect) {
+        customerSelect.innerHTML = BOOK_CATEGORIES.map(c => `<option value="${c.value}">${c.label}</option>`).join('');
+      }
+      if (staffSelect) {
+        staffSelect.innerHTML = BOOK_CATEGORIES
+          .filter(c => c.value)
+          .map(c => `<option value="${c.value}">${c.label}</option>`)
+          .join('');
+      }
+    }
+
+    function renderPaymentFields() {
+      const payMethodEl = document.getElementById('payMethod');
+      const container = document.getElementById('paymentFields');
+      if (!payMethodEl || !container) return;
+
+      const method = payMethodEl.value;
+      if (method === 'Card') {
+        container.innerHTML = `
+          <input id="cardName" placeholder="Name on card" />
+          <input id="cardNumber" placeholder="Card number" />
+          <input id="cardExpiry" placeholder="MM/YY" />
+          <input id="cardCvv" placeholder="CVV" />
         `;
+      } else if (method === 'PayPal') {
+        container.innerHTML = `
+          <input id="paypalEmail" type="email" placeholder="PayPal email" />
+        `;
+      } else {
+        container.innerHTML = `
+          <input id="bankName" placeholder="Bank name" />
+          <input id="bankAccount" placeholder="Account number" />
+          <input id="bankOwner" placeholder="Account holder" />
+        `;
+      }
+    }
 
-            await renderReviews();
-            showSection('book-detail-section');
+    function collectPaymentDetails() {
+      const method = document.getElementById('payMethod').value;
+      if (method === 'Card') {
+        return {
+          holder: (document.getElementById('cardName')?.value || '').trim(),
+          number_last4: (document.getElementById('cardNumber')?.value || '').replace(/\s+/g, '').slice(-4),
+          expiry: (document.getElementById('cardExpiry')?.value || '').trim(),
+        };
+      }
+      if (method === 'PayPal') {
+        return {
+          paypal_email: (document.getElementById('paypalEmail')?.value || '').trim(),
+        };
+      }
+      return {
+        bank_name: (document.getElementById('bankName')?.value || '').trim(),
+        account_last4: (document.getElementById('bankAccount')?.value || '').replace(/\s+/g, '').slice(-4),
+        holder: (document.getElementById('bankOwner')?.value || '').trim(),
+      };
+    }
+
+    function validatePaymentDetails() {
+      const method = document.getElementById('payMethod').value;
+      if (method === 'Card') {
+        if (!(document.getElementById('cardName')?.value || '').trim()) return 'Card holder name is required';
+        if ((document.getElementById('cardNumber')?.value || '').replace(/\s+/g, '').length < 12) return 'Card number is invalid';
+        if (!(document.getElementById('cardExpiry')?.value || '').trim()) return 'Card expiry is required';
+        if ((document.getElementById('cardCvv')?.value || '').replace(/\s+/g, '').length < 3) return 'CVV is invalid';
+      }
+      if (method === 'PayPal') {
+        if (!(document.getElementById('paypalEmail')?.value || '').trim()) return 'PayPal email is required';
+      }
+      if (method === 'Bank') {
+        if (!(document.getElementById('bankName')?.value || '').trim()) return 'Bank name is required';
+        if ((document.getElementById('bankAccount')?.value || '').replace(/\s+/g, '').length < 6) return 'Bank account number is invalid';
+        if (!(document.getElementById('bankOwner')?.value || '').trim()) return 'Account holder is required';
+      }
+      return '';
+    }
+
+    function setUserBadge() {
+      const badge = document.getElementById('userBadge');
+      if (!badge) return;
+      if (!user || !role) {
+        badge.innerHTML = '👤 Guest';
+        return;
+      }
+      const roleEmoji = { customer: '👤', staff: '👔', manager: '🎯' };
+      badge.innerHTML = `${roleEmoji[role] || '👤'} ${user.name || user.email || 'User'}`;
+    }
+
+    function saveSession() {
+      if (!authToken || !role || !user) return;
+      localStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify({ authToken, role, user }));
+    }
+
+    function clearSession() {
+      localStorage.removeItem(SESSION_STORAGE_KEY);
+    }
+
+    function restoreSession() {
+      try {
+        const raw = localStorage.getItem(SESSION_STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (!parsed?.authToken || !parsed?.role || !parsed?.user) return false;
+
+        authToken = parsed.authToken;
+        role = parsed.role;
+        user = parsed.user;
+        setUserBadge();
+        return true;
+      } catch {
+        clearSession();
+        return false;
+      }
+    }
+
+    async function api(url, opts = {}) {
+      const headers = opts.headers || {};
+      if (authToken) headers['Authorization'] = `Bearer ${authToken}`;
+      if (!(opts.body instanceof FormData) && !headers['Content-Type'] && opts.method && opts.method !== 'GET') {
+        headers['Content-Type'] = 'application/json';
+      }
+      const res = await fetch(url, { ...opts, headers });
+      const text = await res.text();
+      let data = {};
+      try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+      if (!res.ok) {
+        if ((res.status === 401 || res.status === 403) && authToken) {
+          authToken = null;
+          role = null;
+          user = null;
+          customerCartId = null;
+          clearSession();
+          setUserBadge();
+          show('authView');
+        }
+        throw new Error(data.error || JSON.stringify(data));
+      }
+      return data;
+    }
+
+    function show(viewId) {
+      ['authView','customerView','staffView','managerView'].forEach(id => {
+        document.getElementById(id).classList.toggle('hidden', id !== viewId);
+      });
+    }
+
+    function switchTab(e, tabName) {
+      document.querySelectorAll('#browse, #cart, #orders, #reviews').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      document.querySelectorAll('#customerView .tab-btn').forEach(btn => btn.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+
+    function switchTabStaff(e, tabName) {
+      document.querySelectorAll('#inventory, #staff-orders, #staff-reviews').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      document.querySelectorAll('#staffView .tab-btn').forEach(btn => btn.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+
+    function switchTabManager(e, tabName) {
+      document.querySelectorAll('#staff, #revenue').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      document.querySelectorAll('#managerView .tab-btn').forEach(btn => btn.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+
+    async function login() {
+      try {
+        const payload = {
+          role: document.getElementById('loginRole').value,
+          email: document.getElementById('loginEmail').value,
+          password: document.getElementById('loginPassword').value,
+        };
+        const result = await api('/auth/login/', { method: 'POST', body: JSON.stringify(payload) });
+        authToken = result.token;
+        role = result.role;
+        user = result.user;
+        saveSession();
+        setUserBadge();
+        document.getElementById('loginMsg').innerHTML = '✓ Login successful!';
+        await openDashboard();
+      } catch (e) {
+        document.getElementById('loginMsg').innerHTML = `✗ Login failed: ${e.message}`;
+      }
+    }
+
+    async function registerCustomer() {
+      try {
+        const payload = {
+          name: document.getElementById('regName').value,
+          email: document.getElementById('regEmail').value,
+          password: document.getElementById('regPassword').value,
+        };
+        const result = await api('/auth/register/', { method: 'POST', body: JSON.stringify(payload) });
+        authToken = result.token;
+        role = result.role;
+        user = result.user;
+        saveSession();
+        setUserBadge();
+        document.getElementById('regMsg').innerHTML = '✓ Registered and logged in!';
+        await openDashboard();
+      } catch (e) {
+        document.getElementById('regMsg').innerHTML = `✗ Registration failed: ${e.message}`;
+      }
+    }
+
+    function logout() {
+      authToken = null;
+      role = null;
+      user = null;
+      customerCartId = null;
+      clearSession();
+      setUserBadge();
+      show('authView');
+    }
+
+    async function openDashboard() {
+      if (role === 'customer') {
+        show('customerView');
+        await loadCustomerData();
+      } else if (role === 'staff') {
+        show('staffView');
+        await loadStaffData();
+      } else if (role === 'manager') {
+        show('managerView');
+        await loadManagerData();
+      }
+    }
+
+    async function loadCustomerData() {
+      try {
+        renderCategorySelects();
+        await Promise.allSettled([loadBooks(), loadRecommendations(), loadCart(), loadOrders(), loadReviewBooks()]);
+      } catch (e) {
+        console.error('Error loading customer data:', e);
+      }
+    }
+
+    async function loadBooks() {
+      try {
+        const q = encodeURIComponent(document.getElementById('bookQ').value || '');
+        const author = encodeURIComponent(document.getElementById('bookAuthor').value || '');
+        const category = encodeURIComponent(document.getElementById('bookCategory').value || '');
+        currentBooks = await api(`/api/book/books/?q=${q}&author=${author}&category=${category}`);
+        
+        document.getElementById('bookList').innerHTML = currentBooks.map(b => `
+          <div class="book-card" onclick="showBookReviews(${b.id})">
+            <img class="book-cover" src="${resolveBookImageUrl(b.image_url)}" alt="${b.title}" onerror="this.onerror=null;this.src='https://via.placeholder.com/400x260?text=Book+Cover';" />
+            <div class="book-title">${b.title}</div>
+            <div class="book-author">by ${b.author}</div>
+            <div class="muted" style="margin-bottom:8px;">${categoryLabel(b.category)}</div>
+            <div class="book-price">$${Number(b.price).toFixed(2)}</div>
+            <div class="book-stock">${b.stock > 0 ? `✓ ${b.stock} in stock` : '✗ Out of stock'}</div>
+            <div class="book-actions">
+              <button class="primary" onclick="event.stopPropagation(); addToCart(${b.id})" ${b.stock > 0 ? '' : 'disabled'}>Add to Cart</button>
+              <button onclick="event.stopPropagation(); showBookReviews(${b.id})">View Details</button>
+            </div>
+          </div>
+        `).join('') || '<p class="muted">No books found</p>';
+
+        const reviewBook = document.getElementById('reviewBook');
+        reviewBook.innerHTML = currentBooks.map(b => `<option value="${b.id}">${b.title}</option>`).join('');
+      } catch (e) {
+        console.error('Error loading books:', e);
+        document.getElementById('bookList').innerHTML = `<div class="alert error">✗ Error loading books: ${e.message}</div>`;
+      }
+    }
+
+    async function loadRecommendations() {
+      try {
+        const recs = await api(`/api/ai/recommendations/?customer_id=${user.id}`);
+        if (recs && recs.length > 0) {
+          document.getElementById('recList').innerHTML = '<strong>🤖 AI Recommendations for you:</strong><div style="margin-top: 8px;">' + 
+            recs.slice(0, 5).map(r => `<div class="muted" style="font-size: 0.87rem; padding: 6px 0;">📖 Book #${r.book_id} (Match score: ${(r.score * 100).toFixed(0)}%)</div>`).join('') + '</div>';
+        } else {
+          document.getElementById('recList').innerHTML = '<p class="muted">No recommendations yet - check back soon!</p>';
+        }
+      } catch (e) {
+        console.error('Error loading recommendations:', e);
+      }
+    }
+
+    function showBookReviews(bookId) {
+      const book = currentBooks.find(b => b.id === bookId);
+      if (!book) return;
+      
+      currentBookForCart = bookId;
+      const modalImage = document.getElementById('modalBookImage');
+      document.getElementById('modalBookTitle').innerText = book.title;
+      document.getElementById('modalBookAuthor').innerText = `by ${book.author}`;
+      document.getElementById('modalBookDescription').innerText = book.description || 'No description available for this book yet.';
+      document.getElementById('modalBookPrice').innerText = `$${Number(book.price).toFixed(2)}`;
+      document.getElementById('modalBookStock').innerText = book.stock > 0 ? `✓ ${book.stock} copies available` : '✗ Out of stock';
+      modalImage.src = resolveBookImageUrl(book.image_url, 'https://via.placeholder.com/900x520?text=Book+Cover');
+      modalImage.onerror = () => { modalImage.src = 'https://via.placeholder.com/900x520?text=Book+Cover'; };
+      modalImage.style.display = 'block';
+      
+      api(`/api/rate/reviews/?book_id=${bookId}`).then(reviews => {
+        document.getElementById('modalReviewList').innerHTML = reviews.length > 0 ? reviews.map(r => `
+          <div class="review-item">
+            <div class="review-rating">⭐ ${r.rating}/5 stars</div>
+            <div class="review-text">${r.comment}</div>
+            ${r.reply ? `<div class="review-reply">📝 Staff Response: ${r.reply}</div>` : ''}
+          </div>
+        `).join('') : '<p class="muted">No reviews yet. Be the first!</p>';
+      }).catch(e => {
+        document.getElementById('modalReviewList').innerHTML = `<div class="alert error">Error loading reviews</div>`;
+      });
+      
+      document.getElementById('bookModal').classList.add('active');
+    }
+
+    function closeBookModal() {
+      document.getElementById('bookModal').classList.remove('active');
+      currentBookForCart = null;
+    }
+
+    async function addToCartFromModal() {
+      if (!currentBookForCart) return;
+      try {
+        await addToCart(currentBookForCart);
+        closeBookModal();
+      } catch (e) {
+        alert(`Failed to add to cart: ${e.message}`);
+      }
+    }
+
+    async function ensureCustomerCart() {
+      if (customerCartId) return customerCartId;
+      try {
+        const existing = await api(`/api/cart/carts/customer/${user.id}/`);
+        customerCartId = existing.id;
+        return customerCartId;
+      } catch (e) {
+        // First-time customer may not have a cart yet; create one and retry once.
+        if (String(e.message || '').includes('Cart not found') || String(e.message || '').includes('404')) {
+          try {
+            const created = await api('/api/cart/carts/', {
+              method: 'POST',
+              body: JSON.stringify({ customer_id: user.id }),
+            });
+            customerCartId = created.id;
+            return customerCartId;
+          } catch (_) {
+            const retried = await api(`/api/cart/carts/customer/${user.id}/`);
+            customerCartId = retried.id;
+            return customerCartId;
+          }
+        }
+        throw e;
+      }
+    }
+
+    async function addToCart(bookId) {
+      try {
+        const cartId = await ensureCustomerCart();
+        await api('/api/cart/carts/items/', {
+          method: 'POST',
+          body: JSON.stringify({ cart: cartId, book_id: bookId, quantity: 1 }),
+        });
+        await loadCart();
+      } catch (e) {
+        console.error('Error adding to cart:', e);
+        throw e;
+      }
+    }
+
+    async function updateCartItemQuantity(itemId, quantity) {
+      if (quantity <= 0) {
+        await removeCartItem(itemId);
+        return;
+      }
+      await api(`/api/cart/carts/items/${itemId}/`, {
+        method: 'PUT',
+        body: JSON.stringify({ quantity }),
+      });
+      await loadCart();
+    }
+
+    async function removeCartItem(itemId) {
+      await api(`/api/cart/carts/items/${itemId}/`, { method: 'DELETE' });
+      await loadCart();
+    }
+
+    async function loadCart() {
+      try {
+        const cartId = await ensureCustomerCart();
+        const cart = await api(`/api/cart/carts/customer/${user.id}/`);
+        customerCartId = cartId || cart.id;
+        if (!cart.items || cart.items.length === 0) {
+          document.getElementById('cartList').innerHTML = '<p class="muted">Your cart is empty. Start shopping! 🛍️</p>';
+          return;
+        }
+        let total = 0;
+        const rows = [];
+        for (const item of cart.items) {
+          const book = await api(`/api/book/books/${item.book_id}/`);
+          const line = Number(book.price) * item.quantity;
+          total += line;
+          rows.push(`
+            <tr>
+              <td>${book.title}</td>
+              <td style="text-align: center;">$${Number(book.price).toFixed(2)}</td>
+              <td style="text-align: center;">
+                <button onclick="updateCartItemQuantity(${item.id}, ${item.quantity - 1})" style="padding:4px 10px; margin-right:6px;">-</button>
+                <strong>${item.quantity}</strong>
+                <button onclick="updateCartItemQuantity(${item.id}, ${item.quantity + 1})" style="padding:4px 10px; margin-left:6px;">+</button>
+              </td>
+              <td style="text-align: right;">$${line.toFixed(2)}</td>
+              <td style="text-align: right;">
+                <button class="danger" onclick="removeCartItem(${item.id})">Remove</button>
+              </td>
+            </tr>
+          `);
+        }
+        document.getElementById('cartList').innerHTML = `
+          <table>
+            <thead><tr><th>Book</th><th>Unit Price</th><th>Quantity</th><th>Subtotal</th><th>Action</th></tr></thead>
+            <tbody>${rows.join('')}</tbody>
+          </table>
+          <div style="margin-top: 18px; padding-top: 18px; border-top: 2px solid var(--line);">
+            <div style="font-size: 1.1rem; font-weight: 700;">Total: <span style="background: linear-gradient(135deg, #6366f1 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">$${total.toFixed(2)}</span></div>
+          </div>
+        `;
+      } catch (e) {
+        console.error('Error loading cart:', e);
+        document.getElementById('cartList').innerHTML = `<div class="alert error">Error loading cart</div>`;
+      }
+    }
+
+    async function checkout() {
+      try {
+        const payload = {
+          customer_id: user.id,
+          address: document.getElementById('shipAddress').value || 'N/A',
+          pay_method: document.getElementById('payMethod').value,
+          ship_method: document.getElementById('shipMethod').value,
+        };
+        const order = await api('/api/order/orders/', { method: 'POST', body: JSON.stringify(payload) });
+        document.getElementById('checkoutMsg').innerHTML = `<div class="alert success">✓ Order #${order.id} placed successfully! Status: ${order.status}</div>`;
+        document.getElementById('shipAddress').value = '';
+        await Promise.all([loadCart(), loadOrders()]);
+      } catch (e) {
+        document.getElementById('checkoutMsg').innerHTML = `<div class="alert error">✗ Checkout failed: ${e.message}</div>`;
+      }
+    }
+
+    async function loadOrders() {
+      try {
+        const orders = await api(`/api/order/orders/?customer_id=${user.id}`);
+        if (!orders.length) {
+          document.getElementById('orderList').innerHTML = '<p class="muted">No orders yet. Start shopping! 🛍️</p>';
+          return;
         }
 
-        async function submitReview() {
-            if (!currentCustomer) {
-                alert("❗ Please login or register to leave a review.");
-                showSection('login-section');
-                return;
+        const orderCards = await Promise.all(orders.map(async (o) => {
+          const enrichedItems = await Promise.all((o.items || []).map(async (i) => {
+            try {
+              const b = await api(`/api/book/books/${i.book_id}/`);
+              return {
+                id: i.book_id,
+                title: b.title || `Book #${i.book_id}`,
+                image: b.image_url || '',
+                quantity: i.quantity,
+                price: Number(i.price || 0),
+              };
+            } catch {
+              return {
+                id: i.book_id,
+                title: `Book #${i.book_id}`,
+                image: '',
+                quantity: i.quantity,
+                price: Number(i.price || 0),
+              };
             }
-            if (!currentBookDetailId) return;
+          }));
 
-            const rating = document.getElementById('review-rating').value;
-            const comment = document.getElementById('review-comment').value;
+          const itemsHtml = enrichedItems.length
+            ? enrichedItems.map((item) => `
+              <div style="display:flex; gap:10px; align-items:center; margin:8px 0; padding:8px; background:#fff; border:1px solid var(--line); border-radius:8px;">
+                <img src="${resolveBookImageUrl(item.image, 'https://via.placeholder.com/64x84?text=Book')}" alt="${item.title}" style="width:64px; height:84px; object-fit:cover; border-radius:6px; flex-shrink:0;" onerror="this.onerror=null;this.src='https://via.placeholder.com/64x84?text=Book';" />
+                <div style="flex:1; min-width:0;">
+                  <div style="font-weight:600; color:var(--ink);">${item.title}</div>
+                  <div class="muted">Qty: ${item.quantity} | Unit: $${item.price.toFixed(2)}</div>
+                </div>
+              </div>
+            `).join('')
+            : '<p class="muted" style="margin: 6px 0 0;">No items</p>';
 
-            if (comment.trim() === '') {
-                alert("Please enter a valid comment");
-                return;
-            }
+          return `
+          <div style="padding: 14px; background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 100%); border-left: 5px solid var(--primary); margin-bottom: 12px; border-radius: 8px;">
+            <div style="font-weight: 700; margin-bottom: 6px;">📦 Order #${o.id}</div>
+            <div class="muted">Amount: <strong style="color: var(--primary);">$${Number(o.total_amount || 0).toFixed(2)}</strong></div>
+            <div style="margin-top: 4px;"><span class="status-${String(o.status).toLowerCase()}">${o.status}</span></div>
+            <div class="muted">Shipping Method: ${o.ship_method || 'N/A'}</div>
+            <div class="muted">Shipping Address: ${o.shipping_address || 'N/A'}</div>
+            <div class="muted" style="margin-top: 8px;">Items:</div>
+            ${itemsHtml}
+          </div>
+        `;
+        }));
 
-            try {
-                const res = await fetch('/api/rate/reviews/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        customer_id: currentCustomer.id,
-                        book_id: currentBookDetailId,
-                        rating: parseInt(rating),
-                        comment: comment
-                    })
-                });
-                if (res.ok) {
-                    document.getElementById('review-comment').value = '';
-                    await renderReviews();
-                    alert("Thanks for your review!");
-                } else {
-                    const err = await res.json();
-                    alert("Error submitting review: " + JSON.stringify(err));
-                }
-            } catch (e) { console.error(e); }
+        document.getElementById('orderList').innerHTML = orderCards.join('');
+      } catch (e) {
+        console.error('Error loading orders:', e);
+      }
+    }
+
+    async function loadReviewBooks() {
+      try {
+        await loadReviews();
+      } catch (e) {
+        console.error('Error loading review books:', e);
+      }
+    }
+
+    async function loadReviews() {
+      try {
+        const bookId = document.getElementById('reviewBook').value;
+        if (!bookId) return;
+        const reviews = await api(`/api/rate/reviews/?book_id=${bookId}`);
+        document.getElementById('myReviewList').innerHTML = reviews.length > 0 ? reviews.map(r => `
+          <div class="review-item">
+            <div class="review-rating">⭐ ${r.rating}/5</div>
+            <div class="review-text">${r.comment}</div>
+            ${r.reply ? `<div class="review-reply">📝 Staff Response: ${r.reply}</div>` : '<div class="muted" style="font-size: 0.85rem; margin-top: 8px;">⏳ Waiting for staff response...</div>'}
+          </div>
+        `).join('') : '<p class="muted">No reviews posted for this book yet</p>';
+      } catch (e) {
+        console.error('Error loading reviews:', e);
+      }
+    }
+
+    async function postReview() {
+      try {
+        const payload = {
+          customer_id: user.id,
+          book_id: Number(document.getElementById('reviewBook').value),
+          rating: Number(document.getElementById('reviewRating').value),
+          comment: document.getElementById('reviewText').value,
+        };
+        await api('/api/rate/reviews/', { method: 'POST', body: JSON.stringify(payload) });
+        document.getElementById('reviewText').value = '';
+        await loadReviews();
+      } catch (e) {
+        alert(`Failed to post review: ${e.message}`);
+      }
+    }
+
+    async function loadStaffData() {
+      try {
+        renderCategorySelects();
+        await Promise.all([loadStaffBooks(), loadStaffOrders(), loadStaffReviews()]);
+      } catch (e) {
+        console.error('Error loading staff data:', e);
+      }
+    }
+
+    async function loadStaffBooks() {
+      try {
+        const books = await api('/api/book/books/');
+        const rows = books.map(b => `<tr><td>${b.id}</td><td>${b.title}</td><td>${b.author}</td><td>${categoryLabel(b.category)}</td><td>$${Number(b.price).toFixed(2)}</td><td style="text-align: center;">${b.stock}</td><td><button class="danger" onclick="staffDeleteBook(${b.id})">Delete</button></td></tr>`).join('');
+        document.getElementById('staffBookTable').innerHTML = `<table><thead><tr><th>ID</th><th>Title</th><th>Author</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="7" class="muted">No books</td></tr>'}</tbody></table>`;
+      } catch (e) {
+        console.error('Error loading staff books:', e);
+      }
+    }
+
+    async function staffAddBook() {
+      try {
+        const payload = {
+          title: document.getElementById('sTitle').value,
+          author: document.getElementById('sAuthor').value,
+          category: document.getElementById('sCategory').value,
+          price: Number(document.getElementById('sPrice').value),
+          stock: Number(document.getElementById('sStock').value),
+        };
+        await api('/api/book/books/', { method: 'POST', body: JSON.stringify(payload) });
+        document.getElementById('sTitle').value = document.getElementById('sAuthor').value = document.getElementById('sPrice').value = document.getElementById('sStock').value = '';
+        await loadStaffBooks();
+      } catch (e) {
+        alert(`Failed to add book: ${e.message}`);
+      }
+    }
+
+    async function staffDeleteBook(id) {
+      if(!confirm('Delete this book?')) return;
+      try {
+        await api(`/api/book/books/${id}/`, { method: 'DELETE' });
+        await loadStaffBooks();
+      } catch (e) {
+        alert(`Failed to delete: ${e.message}`);
+      }
+    }
+
+    async function loadStaffOrders() {
+      try {
+        const orders = await api('/api/order/orders/');
+        document.getElementById('staffOrderList').innerHTML = orders.length > 0 ? orders.map(o => `
+          <div style="padding: 12px; margin-bottom: 10px; background: linear-gradient(135deg, #f0f4f8 0%, #e0e7ff 100%); border-radius: 8px;">
+            <strong>#${o.id}</strong> - Customer ${o.customer_id} - <span class="status-${String(o.status).toLowerCase()}">${o.status}</span>
+          </div>
+        `).join('') : '<p class="muted">No orders</p>';
+
+        const [payments, shipments] = await Promise.all([api('/api/pay/payments/'), api('/api/ship/shipments/')]);
+        document.getElementById('staffOpsStatus').innerHTML = `
+          <div><strong>💳 ${payments.length}</strong> Payment records</div>
+          <div style="margin-top: 12px;"><strong>📦 ${shipments.length}</strong> Shipment records</div>
+        `;
+      } catch (e) {
+        console.error('Error loading staff orders:', e);
+      }
+    }
+
+    async function loadStaffReviews() {
+      try {
+        const reviews = await api('/api/rate/reviews/');
+        document.getElementById('staffReviewList').innerHTML = reviews.length > 0 ? reviews.map(r => `
+          <div class="card" style="margin:0 0 14px;">
+            <div style="margin-bottom: 10px;"><strong>📖 Book #${r.book_id}</strong> - ⭐ ${r.rating}/5</div>
+            <p style="color: var(--ink); margin: 0 0 12px;">"${r.comment}"</p>
+            <textarea id="reply-${r.id}" placeholder="✍️ Your response to this review..." rows="2" style="margin-bottom: 10px;">${r.reply || ''}</textarea>
+            <button class="primary" onclick="replyReview(${r.id})" style="width: 100%;">Post Reply</button>
+          </div>
+        `).join('') : '<p class="muted">No customer reviews yet</p>';
+      } catch (e) {
+        console.error('Error loading staff reviews:', e);
+      }
+    }
+
+    async function replyReview(reviewId) {
+      try {
+        const reply = document.getElementById(`reply-${reviewId}`).value;
+        await api(`/api/rate/reviews/${reviewId}/`, {
+          method: 'PATCH',
+          body: JSON.stringify({ reply, replied_by_staff_id: user.id }),
+        });
+        await loadStaffReviews();
+      } catch (e) {
+        alert(`Failed to post reply: ${e.message}`);
+      }
+    }
+
+    async function loadManagerData() {
+      try {
+        const [orders, staff] = await Promise.all([api('/api/order/orders/'), api('/api/staff/staff/')]);
+        const confirmed = orders.filter(o => String(o.status).toLowerCase() === 'confirm');
+        const revenue = confirmed.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
+
+        document.getElementById('kpiRevenue').innerText = `$${revenue.toFixed(2)}`;
+        document.getElementById('kpiOrders').innerText = String(confirmed.length);
+        document.getElementById('kpiStaff').innerText = String(staff.length);
+
+        document.getElementById('managerStaffTable').innerHTML = `<table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Role</th><th></th></tr></thead><tbody>${staff.map(s => `<tr><td>${s.id}</td><td>${s.name}</td><td>${s.email || ''}</td><td>${s.role}</td><td><button class="danger" onclick="managerDeleteStaff(${s.id})">Remove</button></td></tr>`).join('')}</tbody></table>`;
+        document.getElementById('managerRevenueTable').innerHTML = `<table><thead><tr><th>Order</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead><tbody>${orders.map(o => `<tr><td>#${o.id}</td><td>${o.customer_id}</td><td>$${Number(o.total_amount || 0).toFixed(2)}</td><td class="status-${String(o.status).toLowerCase()}">${o.status}</td></tr>`).join('')}</tbody></table>`;
+      } catch (e) {
+        console.error('Error loading manager data:', e);
+      }
+    }
+
+    async function managerCreateStaff() {
+      try {
+        const payload = {
+          name: document.getElementById('mStaffName').value,
+          email: document.getElementById('mStaffEmail').value,
+          role: document.getElementById('mStaffRole').value,
+          password: document.getElementById('mStaffPass').value,
+        };
+        await api('/api/staff/staff/', { method: 'POST', body: JSON.stringify(payload) });
+        document.getElementById('mStaffMsg').innerText = '✓ Staff account created successfully!';
+        document.getElementById('mStaffName').value = document.getElementById('mStaffEmail').value = document.getElementById('mStaffRole').value = document.getElementById('mStaffPass').value = '';
+        await loadManagerData();
+      } catch (e) {
+        document.getElementById('mStaffMsg').innerText = `✗ Failed: ${e.message}`;
+      }
+    }
+
+    async function managerDeleteStaff(id) {
+      if(!confirm('Remove this staff member?')) return;
+      try {
+        await api(`/api/staff/staff/${id}/`, { method: 'DELETE' });
+        await loadManagerData();
+      } catch (e) {
+        alert(`Failed to delete: ${e.message}`);
+      }
+    }
+
+    (async function bootstrapSession() {
+      if (restoreSession()) {
+        try {
+          await openDashboard();
+          return;
+        } catch (e) {
+          console.error('Session restore failed:', e);
+          logout();
+          return;
         }
-
-        /* ============== STAFF BOOK MANAGEMENT ============== */
-        async function loadStaffBooks() {
-            try {
-                const res = await fetch('/api/book/books/');
-                const books = await res.json();
-                const tbody = document.getElementById('staff-books-table');
-                tbody.innerHTML = '';
-
-                books.forEach(b => {
-                    const safeTitle = b.title.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                    const safeAuthor = b.author.replace(/'/g, "\\'").replace(/"/g, '\\"');
-                    tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid var(--border);">
-                        <td style="padding: 0.5rem;">${b.id}</td>
-                        <td style="padding: 0.5rem;"><strong>${b.title}</strong></td>
-                        <td style="padding: 0.5rem;">${b.author}</td>
-                        <td style="padding: 0.5rem;">$${b.price}</td>
-                        <td style="padding: 0.5rem;">${b.stock}</td>
-                        <td style="padding: 0.5rem;">
-                            <button style="background: var(--secondary); color: white; border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; margin-right: 0.2rem;" onclick="staffUpdateBook(${b.id}, '${safeTitle}', '${safeAuthor}', ${b.price}, ${b.stock})">Edit</button>
-                            <button style="background: #ef4444; color: white; border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer;" onclick="staffDeleteBook(${b.id})">Delete</button>
-                        </td>
-                    </tr>
-                `;
-                });
-            } catch (e) { console.error(e); }
-        }
-
-        async function staffAddBook() {
-            const title = document.getElementById('staff-btitle').value;
-            const author = document.getElementById('staff-bauthor').value;
-            const price = document.getElementById('staff-bprice').value;
-            const stock = document.getElementById('staff-bstock').value;
-
-            if (!title || !author || !price || !stock) {
-                alert("Please fill all fields!");
-                return;
-            }
-
-            try {
-                const res = await fetch('/api/book/books/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, author, price: parseFloat(price), stock: parseInt(stock) })
-                });
-                if (res.ok) {
-                    document.getElementById('staff-btitle').value = '';
-                    document.getElementById('staff-bauthor').value = '';
-                    document.getElementById('staff-bprice').value = '';
-                    document.getElementById('staff-bstock').value = '';
-                    loadStaffBooks();
-                } else {
-                    alert("Error adding book");
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        async function staffDeleteBook(id) {
-            if (!confirm("Are you sure you want to delete this book?")) return;
-            try {
-                const res = await fetch(`/api/book/books/${id}/`, { method: 'DELETE' });
-                if (res.ok) {
-                    loadStaffBooks();
-                } else {
-                    alert("Error deleting book");
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        function staffUpdateBook(id, title, author, price, stock) {
-            document.getElementById('edit-book-id').value = id;
-            document.getElementById('edit-title').value = title;
-            document.getElementById('edit-author').value = author;
-            document.getElementById('edit-price').value = price;
-            document.getElementById('edit-stock').value = stock;
-            document.getElementById('edit-msg').innerText = '';
-            document.getElementById('edit-modal-overlay').classList.add('active');
-        }
-
-        function closeEditModal() {
-            document.getElementById('edit-modal-overlay').classList.remove('active');
-        }
-
-        async function saveEditBook() {
-            const id = document.getElementById('edit-book-id').value;
-            const title = document.getElementById('edit-title').value;
-            const author = document.getElementById('edit-author').value;
-            const price = document.getElementById('edit-price').value;
-            const stock = document.getElementById('edit-stock').value;
-
-            if (!title || !author || !price || !stock) {
-                document.getElementById('edit-msg').innerText = 'Please fill all fields.';
-                return;
-            }
-
-            try {
-                const res = await fetch(`/api/book/books/${id}/`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ title, author, price: parseFloat(price), stock: parseInt(stock) })
-                });
-                if (res.ok) {
-                    closeEditModal();
-                    loadStaffBooks();
-                } else {
-                    document.getElementById('edit-msg').innerText = 'Error updating book.';
-                }
-            } catch (e) { console.error(e); }
-        }
-
-        // Init
-        showSection('books-section');
-    </script>
+      }
+      show('authView');
+    })();
+  </script>
 </body>
-
 </html>

@@ -1,0 +1,439 @@
+
+--- PAGE 1 ---
+Software Architecture and Design
+Constructing Microservice Systems
+Senior Undergraduate Tutorial
+Assignment 05 and Assignment 06
+Tran Dinh Que
+Contents
+1 From Monolithic to Microservice Architecture 3
+1.1 Monolithic Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+1.2 Limitations of Monolith . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+1.3 Microservice Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+2 Design Principles of Microservices 3
+3 Domain-Driven Design (DDD) for Decomposition 4
+3.1 Bounded Context Identification . . . . . . . . . . . . . . . . . . . . . . . 4
+3.2 Strategic DDD Concepts . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+4 ASSIGNMENT 05 – Academic Microservice Implementation 5
+4.1 Objective . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+4.2 Required Services . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+4.3 Functional Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+4.4 Technical Requirements . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+4.5 Deliverables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+5 ASSIGNMENT 06 – Industry-Level Microservices 6
+6 Conclusion 7
+7 APPENDIX 8
+7.1 Project Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+7.2 Step 1: Create Root Folder . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+7.3 Customer Service . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+7.3.1 Create Service . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+7.3.2 settings.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+7.3.3 models.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+7.3.4 serializers.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+7.3.5 views.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+7.3.6 urls.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1
+
+--- PAGE 2 ---
+7.4 Book Service . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+7.4.1 Create Service . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+7.4.2 models.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+7.4.3 views.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+7.5 Cart Service . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+7.5.1 Create Service . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+7.5.2 models.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+7.5.3 views.py . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+7.6 Inter-Service REST Communication . . . . . . . . . . . . . . . . . . . . . 12
+7.6.1 Customer Creation Flow . . . . . . . . . . . . . . . . . . . . . . . 12
+7.6.2 Add Cart Item Flow . . . . . . . . . . . . . . . . . . . . . . . . . 12
+8 API Gateway (Web Interface) 12
+8.0.1 Create Gateway . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+8.0.2 Staff Book Management View . . . . . . . . . . . . . . . . . . . . 12
+8.0.3 books.html . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+8.0.4 Customer Cart View . . . . . . . . . . . . . . . . . . . . . . . . . 13
+8.0.5 cart.html . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+8.1 Docker Compose . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+2
+
+--- PAGE 3 ---
+Student’s tasks:
+ Building bookStore with two Assignments, refered to APPENDIX
+ Discover microservice topics via Reference Book discussed in class.
+ Teams will PREPARE, PRESENT SLIDES and DEMO in dividual.
+ Complete SUBJECT PROJECT (FINAL EXAMINATION)
+1 From Monolithic to Microservice Architecture
+1.1 Monolithic Architecture
+A monolithic system integrates all modules into one deployable unit. Characteristics:
+ Single codebase
+ Single database
+ Tight coupling
+ Single deployment pipeline
+1.2 Limitations of Monolith
+1. Hard to scale specific modules
+2. Risky deployment
+3. Technology lock-in
+4. Difficult team parallelization
+1.3 Microservice Architecture
+Microservice architecture decomposes the system into independent services. Key prop-
+erties:
+ Independent deployment
+ Database per service
+ REST or event-driven communication
+ Independent scaling
+ Fault isolation
+2 Design Principles of Microservices
+1. Single Responsibility (Service Level)
+Each service owns exactly one business capability.
+3
+
+--- PAGE 4 ---
+2. Database per Service
+No shared database between services.
+3. API-First Design
+Define REST contracts before implementation.
+4. Loose Coupling
+Services interact only via APIs or events.
+5. Stateless Services
+Use JWT tokens for authentication.
+6. Resilience
+Apply:
+ Circuit Breaker
+ Retry
+ Timeout
+3 Domain-Driven Design (DDD) for Decomposition
+3.1 Bounded Context Identification
+The BookStore domain is decomposed into:
+Bounded Context Microservice
+Identity customer-service, staff-service
+Catalog catalog-service, book-service
+Ordering cart-service, order-service
+Payment pay-service
+Shipping ship-service
+Review comment-rate-service
+Recommendation recommender-ai-service
+3.2 Strategic DDD Concepts
+ Ubiquitous Language
+ Bounded Context
+ Context Mapping
+ Aggregates
+ Domain Events
+4
+
+--- PAGE 5 ---
+4 ASSIGNMENT 05 – Academic Microservice Im-
+plementation
+4.1 Objective
+Students must decompose a monolithic BookStore into microservices using Django REST
+Framework.
+4.2 Required Services
+1. staff-service
+2. manager-service
+3. customer-service
+4. catalog-service
+5. book-service
+6. cart-service
+7. order-service
+8. ship-service
+9. pay-service
+10. comment-rate-service
+11. recommender-ai-service
+12. api-gateway
+4.3 Functional Requirements
+1. Customer registration automatically creates a cart.
+2. Staff manages books.
+3. Customer adds books to cart, view cart, update cart.
+4. Order triggers payment and shipping, customer select pay, ship.
+5. Customer can rate books.
+4.4 Technical Requirements
+ Django REST Framework
+ REST inter-service calls
+ Docker Compose
+ Independent databases
+5
+
+--- PAGE 6 ---
+4.5 Deliverables
+1. GitHub repository
+2. Architecture diagram for each service
+3. API documentation
+4. 10-minute demo video
+5. 8–12 page technical report
+5 ASSIGNMENT 06 – Industry-Level Microservices
+This assignment upgrades Assignment 05 to production-level architecture.
+1. JWT Authentication Service
+ Central auth-service
+ Role-based access control
+ Token validation at API Gateway
+2. Saga Pattern for Distributed Transactions
+Order creation must use Saga orchestration:
+1. Create order (Pending)
+2. Reserve payment
+3. Reserve shipping
+4. Confirm order
+5. Compensate if failure
+3. Event Bus Integration
+Replace direct REST coupling with asynchronous messaging.
+Suggested tools:
+ RabbitMQ
+ Kafka
+4. API Gateway Responsibilities
+ Routing
+ Authentication validation
+ Logging
+ Rate limiting
+6
+
+--- PAGE 7 ---
+5. Observability
+ Centralized logging
+ Health endpoints
+ Metrics endpoint
+Advanced Deliverables
+1. Implement Saga pattern
+2. Integrate message broker
+3. Implement JWT
+4. Provide fault simulation
+5. Provide load testing results
+6. Architecture justification report
+6 Conclusion
+This tutorial guided students through:
+ Monolithic architecture limitations
+ Microservice principles
+ Domain-Driven Design decomposition
+ Academic-level implementation
+ Industry-grade distributed system architecture
+Students completing ASSIGNMENT 06 will understand real-world distributed archi-
+tecture design.
+7
+
+--- PAGE 8 ---
+7 APPENDIX
+Software Architecture and Design
+BookStore Microservice Implementation for Assignment 05
+7.1 Project Structure
+bookstore - m i c r o s e r v i c e /
+|
+| - - customer - service /
+| - - book - service /
+| - - cart - service /
+| - - api - gateway /
+‘-- docker - compose . yml
+Each service is an independent Django project.
+7.2 Step 1: Create Root Folder
+mkdir bookstore - m i c r o s e r v i c e
+cd bookstore - m i c r o s e r v i c e
+7.3 Customer Service
+7.3.1 Create Service
+mkdir customer - service
+cd customer - service
+python -m venv venv
+source venv / bin / activate
+pip install django d j a n g o r e s t f r a m e w o r k requests
+django - admin s t a r t p r o j e c t c u s t o m e r _ s e r v i c e .
+python manage . py startapp app
+7.3.2 settings.py
+I N S T A L L E D _ A P P S = [
+’ r e s t _ f r a m e w o r k ’ ,
+’ app ’ ,
+]
+7.3.3 models.py
+from django . db import models
+class Customer ( models . Model ) :
+8
+
+--- PAGE 9 ---
+name = models . Ch ar Fi el d ( m a x _ l e n g t h =255)
+email = models . E m a i l F i e l d ( unique = True )
+7.3.4 serializers.py
+from r e s t _ f r a m e w o r k import s e r i a l i z e r s
+from . models import Customer
+class C u s t o m e r S e r i a l i z e r ( s e r i a l i z e r s . M o d e l S e r i a l i z e r ) :
+class Meta :
+model = Customer
+fields = ’ __all__ ’
+7.3.5 views.py
+from r e s t _ f r a m e w o r k . views import APIView
+from r e s t _ f r a m e w o r k . response import Response
+from . models import Customer
+from . s e r i a l i z e r s import C u s t o m e r S e r i a l i z e r
+import requests
+C A R T _ S E R V I C E _ U R L = " http :// cart - service :8000 "
+class C u s t o m e r L i s t C r e a t e ( APIView ) :
+def get ( self , request ) :
+cu st om er s = Customer . objects . all ()
+s e r i a l i z e r = C u s t o m e r S e r i a l i z e r ( customers , many = True )
+return Response ( s e r i a l i z e r . data )
+def post ( self , request ) :
+s e r i a l i z e r = C u s t o m e r S e r i a l i z e r ( data = request . data )
+if s e r i a l i z e r . is_valid () :
+customer = s e r i a l i z e r . save ()
+# Call cart - service
+requests . post (
+f " { C A R T _ S E R V I C E _ U R L }/ carts / " ,
+json ={ " c u s t o m e r _ i d " : customer . id }
+)
+return Response ( s e r i a l i z e r . data )
+return Response ( s e r i a l i z e r . errors )
+7.3.6 urls.py
+from django . urls import path
+from . views import C u s t o m e r L i s t C r e a t e
+9
+
+--- PAGE 10 ---
+u r l p a t t e r n s = [
+path ( ’ cu st om er s / ’ , C u s t o m e r L i s t C r e a t e . as_view () ) ,
+]
+7.4 Book Service
+7.4.1 Create Service
+cd ..
+mkdir book - service
+cd book - service
+python -m venv venv
+source venv / bin / activate
+pip install django d j a n g o r e s t f r a m e w o r k
+django - admin s t a r t p r o j e c t b o o k _ s e r v i c e .
+python manage . py startapp app
+7.4.2 models.py
+from django . db import models
+class Book ( models . Model ) :
+title = models . C ha rF ie ld ( m a x _ l e n g t h =255)
+author = models . Ch ar Fi el d ( m a x _ l e n g t h =255)
+price = models . D e c i m a l F i e l d ( m a x _ d i g i t s =10 , d e c i m a l _ p l a c e s =2)
+stock = models . I n t e g e r F i e l d ()
+7.4.3 views.py
+from r e s t _ f r a m e w o r k . views import APIView
+from r e s t _ f r a m e w o r k . response import Response
+from . models import Book
+from . s e r i a l i z e r s import B o o k S e r i a l i z e r
+class B o o k L i s t C r e a t e ( APIView ) :
+def get ( self , request ) :
+books = Book . objects . all ()
+s e r i a l i z e r = B o o k S e r i a l i z e r ( books , many = True )
+return Response ( s e r i a l i z e r . data )
+def post ( self , request ) :
+s e r i a l i z e r = B o o k S e r i a l i z e r ( data = request . data )
+if s e r i a l i z e r . is_valid () :
+s e r i a l i z e r . save ()
+return Response ( s e r i a l i z e r . data )
+return Response ( s e r i a l i z e r . errors )
+10
+
+--- PAGE 11 ---
+7.5 Cart Service
+7.5.1 Create Service
+cd ..
+mkdir cart - service
+cd cart - service
+python -m venv venv
+source venv / bin / activate
+pip install django d j a n g o r e s t f r a m e w o r k requests
+django - admin s t a r t p r o j e c t c a r t _ s e r v i c e .
+python manage . py startapp app
+7.5.2 models.py
+from django . db import models
+class Cart ( models . Model ) :
+c u s t o m e r _ i d = models . I n t e g e r F i e l d ()
+class CartItem ( models . Model ) :
+cart = models . F o r e i g n K e y ( Cart , on _d el et e = models . CASCADE )
+book_id = models . I n t e g e r F i e l d ()
+quantity = models . I n t e g e r F i e l d ()
+7.5.3 views.py
+from r e s t _ f r a m e w o r k . views import APIView
+from r e s t _ f r a m e w o r k . response import Response
+from . models import Cart , CartItem
+from . s e r i a l i z e r s import CartSerializer , C a r t I t e m S e r i a l i z e r
+import requests
+B O O K _ S E R V I C E _ U R L = " http :// book - service :8000 "
+class C a r t C r e a t e ( APIView ) :
+def post ( self , request ) :
+s e r i a l i z e r = C a r t S e r i a l i z e r ( data = request . data )
+if s e r i a l i z e r . is_valid () :
+s e r i a l i z e r . save ()
+return Response ( s e r i a l i z e r . data )
+class A d d C a r t I t e m ( APIView ) :
+def post ( self , request ) :
+book_id = request . data [ " book_id " ]
+r = requests . get ( f " { B O O K _ S E R V I C E _ U R L }/ books / " )
+books = r . json ()
+11
+
+--- PAGE 12 ---
+if not any ( b [ " id " ] == book_id for b in books ) :
+return Response ({ " error " : " Book not found " })
+s e r i a l i z e r = C a r t I t e m S e r i a l i z e r ( data = request . data )
+if s e r i a l i z e r . is_valid () :
+s e r i a l i z e r . save ()
+return Response ( s e r i a l i z e r . data )
+class ViewCart ( APIView ) :
+def get ( self , request , c u s t o m e r _ i d ) :
+cart = Cart . objects . get ( c u s t o m e r _ i d = c u s t o m e r _ i d )
+items = CartItem . objects . filter ( cart = cart )
+s e r i a l i z e r = C a r t I t e m S e r i a l i z e r ( items , many = True )
+return Response ( s e r i a l i z e r . data )
+7.6 Inter-Service REST Communication
+7.6.1 Customer Creation Flow
+POST / cu st om er s /
+-> save customer
+-> call cart - service POST / carts /
+-> cart created
+7.6.2 Add Cart Item Flow
+POST / cart - items /
+-> cart - service checks book - service
+-> if exists -> add item
+8 API Gateway (Web Interface)
+8.0.1 Create Gateway
+cd ..
+django - admin s t a r t p r o j e c t a p i _ g a t e w a y
+8.0.2 Staff Book Management View
+from django . sh or tc ut s import render
+import requests
+B O O K _ S E R V I C E _ U R L = " http :// book - service :8000 "
+def bo ok _l is t ( request ) :
+r = requests . get ( f " { B O O K _ S E R V I C E _ U R L }/ books / " )
+return render ( request , " books . html " , { " books " : r . json () })
+12
+
+--- PAGE 13 ---
+8.0.3 books.html
+<h2 > Book List </ h2 >
+<ul >
+{% for book in books %}
+<li >{{ book . title }} - {{ book . price }} </ li >
+{% endfor %}
+</ ul >
+8.0.4 Customer Cart View
+C A R T _ S E R V I C E _ U R L = " http :// cart - service :8000 "
+def vi ew _c ar t ( request , c u s t o m e r _ i d ) :
+r = requests . get ( f " { C A R T _ S E R V I C E _ U R L }/ carts /{ c u s t o m e r _ i d }/ " )
+return render ( request , " cart . html " , { " items " : r . json () })
+8.0.5 cart.html
+<h2 > Your Cart </ h2 >
+<ul >
+{% for item in items %}
+<li > Book ID : {{ item . book_id }} | Qty : {{ item . quantity }} </ li >
+{% endfor %}
+</ ul >
+8.1 Docker Compose
+services :
+customer - service :
+build : ./ customer - service
+ports :
+- " 8 0 0 1 : 8 0 0 0 "
+book - service :
+build : ./ book - service
+ports :
+- " 8 0 0 2 : 8 0 0 0 "
+cart - service :
+build : ./ cart - service
+ports :
+- " 8 0 0 3 : 8 0 0 0 "
+api - gateway :
+build : ./ api - gateway
+13
+
+--- PAGE 14 ---
+ports :
+- " 8 0 0 0 : 8 0 0 0 "
+Run:
+docker - compose up -- build
+14

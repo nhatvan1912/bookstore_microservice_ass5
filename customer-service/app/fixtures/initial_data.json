@@ -1,0 +1,20 @@
+[
+  {
+    "model": "app.customer",
+    "pk": 1,
+    "fields": {
+      "name": "Lan Nguyen",
+      "email": "lan.customer@example.com",
+      "password": "pbkdf2_sha256$600000$o7Ypoz6CJGfWgGT9ujMY4h$ouCSB8rz+82ircI1LBrYBhH6Lfcmbv9T2M1wqxWiJBY="
+    }
+  },
+  {
+    "model": "app.customer",
+    "pk": 2,
+    "fields": {
+      "name": "Minh Tran",
+      "email": "minh.customer@example.com",
+      "password": "pbkdf2_sha256$600000$o7Ypoz6CJGfWgGT9ujMY4h$ouCSB8rz+82ircI1LBrYBhH6Lfcmbv9T2M1wqxWiJBY="
+    }
+  }
+]

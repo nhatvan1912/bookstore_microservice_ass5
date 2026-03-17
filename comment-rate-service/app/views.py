@@ -11,3 +11,8 @@ class ReviewListCreate(generics.ListCreateAPIView):
         if book_id is not None:
             queryset = queryset.filter(book_id=book_id)
         return queryset
+
+
+class ReviewDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
