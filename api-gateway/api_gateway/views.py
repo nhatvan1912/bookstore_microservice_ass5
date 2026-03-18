@@ -128,6 +128,18 @@ def index(request):
     return render(request, "index.html")
 
 
+def customer_page(request):
+    return render(request, "customer.html")
+
+
+def staff_page(request):
+    return render(request, "staff.html")
+
+
+def manager_page(request):
+    return render(request, "manager.html")
+
+
 @csrf_exempt
 def auth_login(request):
     if request.method != "POST":

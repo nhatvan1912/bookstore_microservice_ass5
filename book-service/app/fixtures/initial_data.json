@@ -7,7 +7,7 @@
       "author": "Robert C. Martin",
       "category": "technology",
       "description": "A practical guide to software architecture principles, clean boundaries, and long-term maintainable systems.",
-      "image_url": "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=80",
+      "image_url": "https://drive.google.com/file/d/1hRKpO20kXPUy86qg8PELzoY4cjH8ZV81/view?usp=drive_link",
       "price": "23.50",
       "stock": 18
     }
@@ -20,7 +20,7 @@
       "author": "Martin Kleppmann",
       "category": "science",
       "description": "Deep dive into data systems: storage engines, stream processing, distributed consensus, and reliability trade-offs.",
-      "image_url": "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=900&q=80",
+      "image_url": "https://drive.google.com/file/d/1Oi9q_Rxw5kHJFXgC7hHCvvmZhbVj4DfN/view?usp=drive_link",
       "price": "32.00",
       "stock": 12
     }
@@ -33,7 +33,7 @@
       "author": "Sam Newman",
       "category": "technology",
       "description": "Patterns and practices for decomposing systems into resilient, independently deployable services.",
-      "image_url": "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?auto=format&fit=crop&w=900&q=80",
+      "image_url": "https://drive.google.com/file/d/1QCohrYIj8-HiXrmj5HHWsV0lbsGz47ES/view?usp=drive_link",
       "price": "27.90",
       "stock": 20
     }
@@ -46,7 +46,7 @@
       "author": "Martin Fowler",
       "category": "technology",
       "description": "Catalog of proven refactoring techniques to improve existing code without changing behavior.",
-      "image_url": "https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=900&q=80",
+      "image_url": "https://drive.google.com/file/d/1Wu-oqxCLn13sJ0HsfHidmypA9yBrWpwP/view?usp=drive_link",
       "price": "29.50",
       "stock": 14
     }
@@ -59,9 +59,48 @@
       "author": "Andrew Hunt",
       "category": "business",
       "description": "Timeless engineering mindset and practical habits for becoming an effective software professional.",
-      "image_url": "https://images.unsplash.com/photo-1455885666463-9d26d9f1f8f3?auto=format&fit=crop&w=900&q=80",
+      "image_url": "https://drive.google.com/file/d/1Ezhqo-LUV1Ot4IAfm3tizuT1UszLKi4U/view?usp=drive_link",
       "price": "24.75",
       "stock": 16
+    }
+  },
+  {
+    "model": "app.book",
+    "pk": 6,
+    "fields": {
+      "title": "Domain-Driven Design",
+      "author": "Eric Evans",
+      "category": "technology",
+      "description": "Foundational patterns for modeling complex business domains and aligning code with domain language.",
+      "image_url": "https://drive.google.com/file/d/10jTo21VzSZYEWCAp2MiDQeHy3gulHC7B/view?usp=drive_link",
+      "price": "31.20",
+      "stock": 10
+    }
+  },
+  {
+    "model": "app.book",
+    "pk": 7,
+    "fields": {
+      "title": "The Phoenix Project",
+      "author": "Gene Kim",
+      "category": "business",
+      "description": "A novel-style introduction to DevOps, flow efficiency, and improving software delivery in organizations.",
+      "image_url": "https://drive.google.com/file/d/1DLLKstxAofYSbkcbVRYK6UBLPNbIL2NO/view?usp=drive_link",
+      "price": "21.40",
+      "stock": 22
+    }
+  },
+  {
+    "model": "app.book",
+    "pk": 8,
+    "fields": {
+      "title": "A Brief History of Time",
+      "author": "Stephen Hawking",
+      "category": "science",
+      "description": "Accessible exploration of cosmology, black holes, and the structure of the universe.",
+      "image_url": "https://drive.google.com/file/d/1VSPBGvc3WBsb0cc9QAA0Po_grYRMeWZb/view?usp=drive_link",
+      "price": "19.90",
+      "stock": 15
     }
   }
 ]

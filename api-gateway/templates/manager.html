@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🎯 Manager Dashboard</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}?v=20260318-2" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1 class="brand">📚 Nhatvan Bookstore</h1>
+      <div class="top-actions">
+        <span id="userBadge" class="pill">👤 Guest</span>
+        <button onclick="window.location.href='index.html'">⬅ Back to Login</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="managerView">
+      <div class="card">
+        <h2>🎯 Manager Dashboard</h2>
+        <p>Monitor KPIs, manage staff, and track business performance.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="kpi" id="kpiRevenue">$0.00</div>
+          <div class="muted">💰 Confirmed Revenue</div>
+        </div>
+        <div class="card">
+          <div class="kpi" id="kpiOrders">0</div>
+          <div class="muted">📦 Confirmed Orders</div>
+        </div>
+        <div class="card">
+          <div class="kpi" id="kpiStaff">0</div>
+          <div class="muted">👥 Staff Accounts</div>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTabManager(event, 'staff')">👥 Staff Mgmt</button>
+        <button class="tab-btn" onclick="switchTabManager(event, 'revenue')">💰 Revenue</button>
+      </div>
+
+      <div id="staff" class="tab-content active">
+        <div class="card">
+          <h3>➕ Create New Staff Account</h3>
+          <div class="row">
+            <input id="mStaffName" placeholder="Full name" />
+            <input id="mStaffEmail" placeholder="Email address" />
+            <input id="mStaffRole" placeholder="Role (e.g., Inventory)" />
+            <input id="mStaffPass" type="password" placeholder="Password" />
+          </div>
+          <button class="primary" onclick="managerCreateStaff()" style="width: 100%; margin-bottom: 20px;">+ Create Account</button>
+          <p id="mStaffMsg"></p>
+          <h3>📋 Staff Directory</h3>
+          <div id="managerStaffTable"></div>
+        </div>
+      </div>
+
+      <div id="revenue" class="tab-content">
+        <div class="card">
+          <h3>💰 Revenue Breakdown</h3>
+          <div id="managerRevenueTable"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="{% static 'app.js' %}?v=20260318-7"></script>
+</body>
+</html>

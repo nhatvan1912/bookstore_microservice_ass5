@@ -11,6 +11,25 @@ SHIP_SERVICE_URL = "http://ship-service:8000"
 BOOK_SERVICE_URL = "http://book-service:8000"
 
 
+def _clear_customer_cart(customer_id):
+    """Best-effort cart cleanup after a successful order creation."""
+    try:
+        cart_resp = requests.get(f"{CART_SERVICE_URL}/carts/customer/{customer_id}/", timeout=10)
+        if cart_resp.status_code != 200:
+            return
+        cart = cart_resp.json()
+        for item in cart.get("items", []):
+            item_id = item.get("id")
+            if item_id is None:
+                continue
+            try:
+                requests.delete(f"{CART_SERVICE_URL}/carts/items/{item_id}/", timeout=10)
+            except Exception:
+                continue
+    except Exception:
+        return
+
+
 class OrderListCreate(APIView):
     def get(self, request):
         queryset = Order.objects.all()
@@ -28,6 +47,7 @@ class OrderListCreate(APIView):
         payment_details = request.data.get("payment_details", {})
         ship_method = request.data.get("ship_method", "Standard")
         address = request.data.get("address", "Default Address")
+        is_cod = str(pay_method).upper() == "COD"
 
         # Get cart
         try:
@@ -70,16 +90,19 @@ class OrderListCreate(APIView):
         shipping_ok = False
 
         # Step 1: Reserve payment
-        try:
-            pay_resp = requests.post(f"{PAY_SERVICE_URL}/payments/", json={
-                "order_id": order.id,
-                "amount": float(total),
-                "method": pay_method,
-                "status": "Reserved",
-            })
-            payment_ok = pay_resp.status_code in {200, 201}
-        except Exception:
-            payment_ok = False
+        if is_cod:
+            payment_ok = True
+        else:
+            try:
+                pay_resp = requests.post(f"{PAY_SERVICE_URL}/payments/", json={
+                    "order_id": order.id,
+                    "amount": float(total),
+                    "method": pay_method,
+                    "status": "Reserved",
+                })
+                payment_ok = pay_resp.status_code in {200, 201}
+            except Exception:
+                payment_ok = False
 
         # Step 2: Reserve shipping
         if payment_ok:
@@ -100,7 +123,7 @@ class OrderListCreate(APIView):
         else:
             order.status = "Failed"
             # Compensate payment when shipping reservation fails.
-            if payment_ok and not shipping_ok:
+            if payment_ok and not shipping_ok and not is_cod:
                 try:
                     requests.post(f"{PAY_SERVICE_URL}/payments/", json={
                         "order_id": order.id,
@@ -112,6 +135,8 @@ class OrderListCreate(APIView):
                     pass
 
         order.save()
+        if order.status != "Failed":
+            _clear_customer_cart(customer_id)
         return Response(OrderSerializer(order).data)
 
 
@@ -141,7 +166,16 @@ class OrderDetail(APIView):
         if requested_status in {"Confirm", "Rejected"} and order.status != "PendingApproval":
             return Response({"error": "Only pending approval orders can be reviewed by staff"}, status=400)
 
-        serializer = OrderSerializer(order, data=request.data, partial=True)
+        if requested_status == "Rejected":
+            rejection_reason = str(request.data.get("rejection_reason", "")).strip()
+            if not rejection_reason:
+                return Response({"error": "rejection_reason is required for rejected orders"}, status=400)
+
+        update_payload = dict(request.data)
+        if requested_status == "Confirm":
+            update_payload["rejection_reason"] = ""
+
+        serializer = OrderSerializer(order, data=update_payload, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

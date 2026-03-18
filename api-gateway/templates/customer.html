@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% load static %}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📚 Customer Dashboard</title>
+  <link rel="stylesheet" href="{% static 'styles.css' %}?v=20260318-2" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1 class="brand">📚 Nhatvan Bookstore</h1>
+      <div class="top-actions">
+        <span id="userBadge" class="pill">👤 Guest</span>
+        <button onclick="window.location.href='index.html'">⬅ Back to Login</button>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="customerView">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'browse')">📖 Browse Books</button>
+        <button class="tab-btn" onclick="switchTab(event, 'cart')">🛒 Shopping Cart</button>
+        <button class="tab-btn" onclick="switchTab(event, 'orders')">📦 Orders</button>
+        <button class="tab-btn" onclick="switchTab(event, 'reviews')">⭐ My Reviews</button>
+      </div>
+
+      <div id="browse" class="tab-content active">
+        <div class="card">
+          <h3>Available Books</h3>
+          <div class="row" style="margin-bottom: 18px;">
+            <input id="bookQ" placeholder="🔍 Search by title..." />
+            <input id="bookAuthor" placeholder="👤 Filter by author..." />
+            <select id="bookCategory" onchange="loadBooks()"></select>
+            <button onclick="loadBooks()" class="primary">Search</button>
+          </div>
+          <div id="recList" style="margin-bottom: 20px;"></div>
+          <h3>All Books</h3>
+          <div id="bookList" class="grid"></div>
+        </div>
+      </div>
+
+      <div id="cart" class="tab-content">
+        <div class="card">
+          <h3>🛒 Your Shopping Cart</h3>
+          <div id="cartList"></div>
+          <div class="row" style="margin-top: 20px;">
+            <input id="shipAddress" placeholder="📍 Shipping address" />
+            <select id="payMethod" onchange="renderPaymentFields()"><option value="Card">💳 Credit Card</option><option value="PayPal">🅿️ PayPal</option><option value="Bank">🏦 Bank Transfer</option><option value="COD">💵 Cash on Delivery</option></select>
+            <select id="shipMethod"><option value="Standard">📮 Standard (5-7 days)</option><option value="Express">🚀 Express (2-3 days)</option></select>
+          </div>
+          <div id="paymentFields" class="row" style="margin-top: 8px;"></div>
+          <button class="primary" onclick="checkout()" style="width: 100%; padding: 14px; font-size: 1rem;">Complete Purchase</button>
+          <p id="checkoutMsg"></p>
+        </div>
+      </div>
+
+      <div id="orders" class="tab-content">
+        <div class="card">
+          <h3>📦 Your Order History</h3>
+          <div id="orderList"></div>
+        </div>
+      </div>
+
+      <div id="reviews" class="tab-content">
+        <div class="card">
+          <h3>⭐ Reviews After Purchase</h3>
+          <p class="muted" style="margin-top: 0;">You can only review books that you have purchased.</p>
+          <div id="customerPurchasedReviewList"></div>
+          <h3 style="margin-top: 20px;">📝 Your Submitted Reviews</h3>
+          <div id="myReviewList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="bookModal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeBookModal()">&times;</button>
+      <img id="modalBookImage" src="" alt="Book cover" style="width:70%; max-height:400px; object-fit:cover; border-radius:10px; margin:0 auto 14px auto;display:block;" />
+      <h2 id="modalBookTitle"></h2>
+      <p id="modalBookAuthor" class="muted"></p>
+      <p id="modalBookDescription" class="muted" style="line-height:1.5; margin-bottom: 12px;"></p>
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, #6366f1 0%, #f59e0b 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 8px;" id="modalBookPrice"></div>
+        <div class="muted" id="modalBookStock"></div>
+      </div>
+      <button class="primary" onclick="addToCartFromModal()" style="width: 100%; margin-bottom: 20px; padding: 14px; font-size: 1rem;">🛒 Add to Cart</button>
+      <h3>⭐ Customer Reviews</h3>
+      <div id="modalReviewList"></div>
+    </div>
+  </div>
+
+  <script src="{% static 'app.js' %}?v=20260318-7"></script>
+</body>
+</html>
